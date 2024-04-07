@@ -14,19 +14,29 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique @default("aasim@zipfeast.in")
-  password  String
-  phone     String?
-  avatar    String?
-  address   String?
-  city      String?
-  state     String?
-  pincode   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  password     String
+  phone        String?
+  avatar       String?
+  address      String?
+  city         String?
+  state        String?
+  pincode      String?
+  role         Role           @relation(fields: [roleId], references: [id])
+  roleId       Int            @default(2)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orders       Order[]
+  RefreshToken RefreshToken[]
+  Favorite     Favorite[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
 }
 
 model Merchant {
@@ -35,49 +45,100 @@ model Merchant {
   email     String    @unique
   password  String
   phone     String
+  avatar    String
   address   String
   city      String
   state     String
   pincode   String
-  avatar    String?
-  products  Product[]
-  approved  Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  products  Product[]
   Order     Order[]
 }
 
-model Admin {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  phone     String
-  avatar    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// model Admin {
+//   id        Int      @id @default(autoincrement())
+//   name      String
+//   email     String   @unique
+//   password  String
+//   phone     String
+//   avatar    String?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  merchant    Merchant    @relation(fields: [merchantId], references: [id])
+  merchantId  Int
+  isAvailable Boolean
+  image       Image[]
+  order       Order[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Favorite    Favorite[]
+  OrderItem   OrderItem[]
 }
 
 model Order {
-  id         Int       @id @default(autoincrement())
-  user       User      @relation(fields: [userId], references: [id])
-  userId     Int
-  merchant   Merchant  @relation(fields: [merchantId], references: [id])
-  merchantId Int
-  products   Product[]
-  status     String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id              Int         @id @default(autoincrement())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          Int
+  merchant        Merchant    @relation(fields: [merchantId], references: [id])
+  merchantId      Int
+  totalQuantity   Int
+  totalAmount     Float
+  orderStatus     String
+  deliveryAddress String
+  paymentMethod   String
+  items           OrderItem[]
+  products        Product[]
+  createdAt       DateTime    @default(now())
 }
 
-model Product {
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+}
+
+model Image {
+  id         Int       @id @default(autoincrement())
+  url        String
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Favorite   Favorite? @relation(fields: [favoriteId], references: [id])
+  favoriteId Int?
+}
+
+model RefreshToken {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  userId    Int?
+  user      User?     @relation(fields: [userId], references: [id])
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Favorite {
   id          Int      @id @default(autoincrement())
   name        String
-  price       Float
-  description String?
-  merchant    Merchant @relation(fields: [merchantId], references: [id])
-  merchantId  Int
-  orders      Order[]
+  description String
+  image       Image[]
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

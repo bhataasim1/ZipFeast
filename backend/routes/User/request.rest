@@ -1,0 +1,16 @@
+POST http://localhost:3000/api/v1/user/register
+
+{
+    "name": "John Doe",
+    "email": "aasim@test.com",
+    "password": "password",
+    "isMerchant": true
+}
+
+
+GET http://localhost:3000/api/v1/user/login
+
+{
+    "email": "aasim@test.com",
+    "password": "password"
+}
