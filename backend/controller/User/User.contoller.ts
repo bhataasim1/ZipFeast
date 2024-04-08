@@ -185,8 +185,7 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export async function logOut(req: Request, res: Response) {
-    let refreshToken: string = req.body.token;
-
+    let refreshToken: string = req.body.token; // in body use 'token: "refreshToken"'
     if (!refreshToken && req.headers.authorization) {
         const authHeader = req.headers.authorization;
         const tokenParts = authHeader.split(' ');

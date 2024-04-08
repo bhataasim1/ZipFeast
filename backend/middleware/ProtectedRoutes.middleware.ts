@@ -2,6 +2,8 @@ import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { BaseEnvironment } from '../Environment';
 import { prisma } from '../prisma/Schema';
+import { ApiResponse } from './apiResponse.middleware';
+import { NextFunction, Request, Response } from 'express';
 
 const env = new BaseEnvironment();
 
@@ -39,6 +41,55 @@ passport.use(
         return done(null, merchant);
     })
 );
+
+export const authorizedUser = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const authenticatedUserId = req.user.id;
+        const requestedUserId = parseInt(req.params.id);
+
+        if (!authenticatedUserId) {
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Unauthorized: User not authenticated',
+                    },
+                    401
+                )
+            );
+        }
+
+        if (authenticatedUserId !== requestedUserId) {
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message:
+                            'Forbidden: You do not have permission to access this resource',
+                    },
+                    401
+                )
+            );
+        }
+        next();
+    } catch (error) {
+        return res.send(
+            new ApiResponse(
+                {
+                    status: 'error',
+                    message: 'Something went wrong',
+                },
+                500
+            )
+        );
+    }
+};
 
 export const userAuth = passport.authenticate('user-jwt', { session: false });
 export const merchantAuth = passport.authenticate('merchant-jwt', {

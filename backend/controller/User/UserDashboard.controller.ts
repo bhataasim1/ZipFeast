@@ -54,4 +54,61 @@ export const getUserProfile = async (req: Request, res: Response) => {
     }
 };
 
-export const protectedRoutes = [userAuth]
+export const updateProfile = async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const {
+        name,
+        email,
+        password,
+        avatar,
+        phone,
+        address,
+        city,
+        state,
+        pincode,
+    } = req.body;
+    try {
+        const user = await prisma.user.update({
+            where: {
+                id: Number(userId),
+            },
+            data: {
+                name,
+                email,
+                password,
+                avatar,
+                phone,
+                address,
+                city,
+                state,
+                pincode,
+            },
+        });
+
+        //eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: pass, roleId, createdAt, updatedAt, ...rest } = user;
+
+        res.send(
+            new ApiResponse(
+                {
+                    status: 'success',
+                    message: 'User profile updated',
+                    data: rest,
+                },
+                200
+            )
+        );
+    } catch (error) {
+        res.send(
+            new ApiResponse(
+                {
+                    status: 'error',
+                    message: 'Something went wrong',
+                },
+                500
+            )
+        );
+    }
+};
+
+export const protectedRoutes = [userAuth];
