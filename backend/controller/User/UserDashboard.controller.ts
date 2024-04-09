@@ -2,7 +2,7 @@ import { prisma } from '../../prisma/Schema';
 import { ApiResponse } from '../../middleware/apiResponse.middleware';
 import { Request, Response } from 'express';
 import { userAuth } from '../../middleware/ProtectedRoutes.middleware';
-import UserProfileValidator from '../../utils/Validator';
+import UserProfileValidator from '../../utils/UserProfileValidator';
 
 export const getUserProfile = async (req: Request, res: Response) => {
     const userId = req.params.id;
