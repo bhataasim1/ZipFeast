@@ -22,6 +22,10 @@ router.post('/token', refreshToken);
 
 router.use(protectedRoutes);
 router.get('/profile/:id', authorizedUser, getUserProfile);
-router.post('/profile/update/:id', authorizedUser, updateProfile);
+router.post(
+    '/profile/update/:id',
+    authorizedUser,
+    updateProfile
+);
 
 export default router;
