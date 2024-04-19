@@ -1,8 +1,8 @@
 import { prisma } from '../../prisma/Schema';
-import { ApiResponse } from '../../middleware/apiResponse.middleware';
 import { Request, Response } from 'express';
-import { userAuth } from '../../middleware/ProtectedRoutes.middleware';
+import { ApiResponse, userAuth } from '../../middleware';
 import UserProfileValidator from '../../utils/UserProfileValidator';
+import { UserProfile } from '../../types'; 
 
 export const getUserProfile = async (req: Request, res: Response) => {
     const userId = req.params.id;
@@ -62,13 +62,13 @@ export const updateProfile = async (req: Request, res: Response) => {
         name,
         email,
         password,
-        avatar,
+        // avatar,
         phone,
         address,
         city,
         state,
         pincode,
-    } = req.body;
+    }: UserProfile = req.body;
     try {
         const validator = new UserProfileValidator(req);
         validator
@@ -83,33 +83,29 @@ export const updateProfile = async (req: Request, res: Response) => {
             .validatePincode();
 
         await validator.validate(req, res, async () => {
+            const userData: UserProfile = {
+                name,
+                email,
+                password,
+                // avatar,
+                phone,
+                address,
+                city,
+                state,
+                pincode,
+            };
+            if (req.file) {
+                userData.avatar = req.file?.path;
+            }
             const user = await prisma.user.update({
                 where: {
                     id: Number(userId),
                 },
-                data: {
-                    name,
-                    email,
-                    password,
-                    avatar,
-                    phone,
-                    address,
-                    city,
-                    state,
-                    pincode,
-                },
+                data: userData,
             });
-            const {
-                //eslint-disable-next-line @typescript-eslint/no-unused-vars
-                password: pass,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                role,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                createdAt,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                updatedAt,
-                ...rest
-            } = user;
+
+            //eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password: pass, role, createdAt, updatedAt, ...rest } = user;
 
             res.send(
                 new ApiResponse(

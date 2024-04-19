@@ -10,6 +10,7 @@ export class BaseEnvironment {
         NODE_ENV: 'development',
         ACCESS_TOKEN_SECRET: 'my-local-ZipFeast-secret',
         ACCESS_TOKEN_LIFE: '1h',
+        UPLOAD_DIR: 'uploads',
     };
     get environment(): Environmnent {
         return process.env.NODE_ENV as Environmnent;
@@ -41,6 +42,12 @@ export class BaseEnvironment {
         return (
             process.env.ACCESS_TOKEN_LIFE! ||
             this.defaultEnvironmentValues.ACCESS_TOKEN_LIFE
+        );
+    }
+
+    get UPLOAD_DIR(): string {
+        return (
+            process.env.UPLOAD_DIR! || this.defaultEnvironmentValues.UPLOAD_DIR
         );
     }
 }

@@ -4,13 +4,13 @@ import {
     loginUser,
     logOut,
     accessToken,
-} from '../../controller/User/User.contoller';
-import {
     getUserProfile,
     protectedRoutes,
     updateProfile,
-} from '../../controller/User/UserDashboard.controller';
-import { authorizedUser } from '../../middleware/ProtectedRoutes.middleware';
+} from '../../controller';
+import { authorizedUser, upload } from '../../middleware';
+
+
 
 const router = express.Router();
 
@@ -24,6 +24,7 @@ router.use(protectedRoutes);
 router.get('/profile/:id', authorizedUser, getUserProfile);
 router.post(
     '/profile/update/:id',
+    upload.single('avatar'),
     authorizedUser,
     updateProfile
 );

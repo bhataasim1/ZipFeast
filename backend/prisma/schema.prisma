@@ -61,6 +61,7 @@ model Product {
   description String
   price       Float
   stock       Int
+  category    String
   merchant    Merchant    @relation(fields: [merchantId], references: [id])
   merchantId  Int
   isAvailable Boolean
