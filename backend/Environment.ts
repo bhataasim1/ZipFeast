@@ -10,7 +10,6 @@ export class BaseEnvironment {
         NODE_ENV: 'development',
         ACCESS_TOKEN_SECRET: 'my-local-ZipFeast-secret',
         ACCESS_TOKEN_LIFE: '1h',
-        REFRESH_TOKEN_SECRET: 'my-local-ZipFeast-secret',
     };
     get environment(): Environmnent {
         return process.env.NODE_ENV as Environmnent;
@@ -42,13 +41,6 @@ export class BaseEnvironment {
         return (
             process.env.ACCESS_TOKEN_LIFE! ||
             this.defaultEnvironmentValues.ACCESS_TOKEN_LIFE
-        );
-    }
-
-    get REFRESH_TOKEN_SECRET(): string {
-        return (
-            process.env.REFRESH_TOKEN_SECRET! ||
-            this.defaultEnvironmentValues.REFRESH_TOKEN_SECRET
         );
     }
 }

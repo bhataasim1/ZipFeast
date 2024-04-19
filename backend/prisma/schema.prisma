@@ -18,45 +18,45 @@ enum Role {
 
 // User model represents customers of the app
 model User {
-  id            Int            @id @default(autoincrement())
-  name         String
-  email        String         @unique
-  password     String
-  phone        String?
-  avatar       String?
-  address      String?
-  city         String?
-  state        String?
-  pincode      String?
-  role         Role           @default(USER)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  orders       Order[]
-  RefreshToken RefreshToken[]
-  Favorite     Favorite[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  password    String
+  phone       String?
+  avatar      String?
+  address     String?
+  city        String?
+  state       String?
+  pincode     String?
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  orders      Order[]
+  AccessToken AccessToken[]
+  Favorite    Favorite[]
 }
 
 // Merchant model represents shop owners or sellers
 model Merchant {
-  id            Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String
-  avatar    String
-  address   String
-  city      String
-  state     String
-  pincode   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  products  Product[]
-  Order     Order[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  password    String
+  phone       String
+  avatar      String
+  address     String
+  city        String
+  state       String
+  pincode     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  products    Product[]
+  Order       Order[]
 }
 
 // Product model represents items available for purchase
 model Product {
-  id            Int         @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   price       Float
@@ -102,7 +102,7 @@ model OrderItem {
 
 // Image model represents images associated with a product
 model Image {
-  id          Int       @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   url        String
   product    Product   @relation(fields: [productId], references: [id])
   productId  Int
@@ -112,15 +112,13 @@ model Image {
   favoriteId Int?
 }
 
-// RefreshToken model represents refresh tokens for user authentication
-model RefreshToken {
-  id          Int       @id @default(autoincrement())
-  token     String    @unique
-  userId    Int?
-  user      User?     @relation(fields: [userId], references: [id])
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+// AccessToken model represents refresh tokens for user authentication
+model AccessToken {
+  token      String    @unique @db.VarChar(255)
+  userId     Int?
+  user       User?     @relation(fields: [userId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Favorite model represents user's favorite products

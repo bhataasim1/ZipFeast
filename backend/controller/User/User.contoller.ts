@@ -4,8 +4,7 @@ import { ApiResponse } from '../../middleware/apiResponse.middleware';
 import bcrypt from 'bcrypt';
 import {
     generateAccessToken,
-    generateRefreshToken,
-    verifyRefreshToken,
+    verifyAccessToken,
 } from '../../middleware/auth.midleware';
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -61,7 +60,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 name,
                 email,
                 password: hashedPassword,
-                role
+                role,
             },
         });
         res.send(
@@ -138,25 +137,35 @@ export const loginUser = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const payload = {
-            id: existingUser.id,
-            email: existingUser.email,
-            role: existingUser.role,
-        };
-
-        const accessToken = generateAccessToken(payload);
-        const refreshToken = generateRefreshToken(payload);
-
-        await prisma.refreshToken.create({
-            data: {
-                token: refreshToken,
+        const existingAccessToken = await prisma.accessToken.findFirst({
+            where: {
                 userId: existingUser.id,
             },
         });
 
+        let accessToken;
+
+        if (existingAccessToken) {
+            accessToken = existingAccessToken.token;
+        } else {
+            const payload = {
+                id: existingUser.id,
+                email: existingUser.email,
+                role: existingUser.role,
+            };
+
+            accessToken = generateAccessToken(payload);
+
+            await prisma.accessToken.create({
+                data: {
+                    token: accessToken,
+                    userId: existingUser.id
+                },
+            });
+        }
+
         //eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, createdAt, updatedAt, role, ...user } =
-            existingUser;
+        const { password, createdAt, updatedAt, role, ...user } = existingUser;
         res.send(
             new ApiResponse(
                 {
@@ -164,7 +173,6 @@ export const loginUser = async (req: Request, res: Response) => {
                     message: 'User logged in successfully',
                     user,
                     accessToken,
-                    refreshToken,
                 },
                 200
             )
@@ -185,17 +193,17 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export async function logOut(req: Request, res: Response) {
-    let refreshToken: string = req.body.token; // in body use 'token: "refreshToken"'
-    if (!refreshToken && req.headers.authorization) {
+    let accessToken: string = req.body.token; // in body use 'token: "accessToken"'
+    if (!accessToken && req.headers.authorization) {
         const authHeader = req.headers.authorization;
         const tokenParts = authHeader.split(' ');
 
         if (tokenParts.length === 2 && tokenParts[0] === 'Bearer') {
-            refreshToken = tokenParts[1];
+            accessToken = tokenParts[1];
         }
     }
 
-    if (!refreshToken) {
+    if (!accessToken) {
         res.send(
             new ApiResponse(
                 {
@@ -207,10 +215,10 @@ export async function logOut(req: Request, res: Response) {
         );
         return;
     }
-    await prisma.refreshToken
+    await prisma.accessToken
         .delete({
             where: {
-                token: refreshToken,
+                token: accessToken,
             },
         })
         .then(() => {
@@ -237,33 +245,33 @@ export async function logOut(req: Request, res: Response) {
         });
 }
 
-export async function refreshToken(req: Request, res: Response) {
-    const refreshToken: string = req.body.token;
+export async function accessToken(req: Request, res: Response) {
+    const token: string = req.body.token;
 
-    if (!refreshToken) {
+    if (!token) {
         res.send(
             new ApiResponse(
                 {
                     status: 'error',
-                    message: 'Refresh Token is required',
+                    message: 'Access Token is required',
                 },
                 400
             )
         );
         return;
     }
-    const existingRefreshToken = await prisma.refreshToken.findFirst({
+    const existingAccessToken = await prisma.accessToken.findFirst({
         where: {
-            token: refreshToken,
+            token: token,
         },
     });
 
-    if (!existingRefreshToken) {
+    if (!existingAccessToken) {
         res.send(
             new ApiResponse(
                 {
                     status: 'error',
-                    message: 'Invalid Refresh Token',
+                    message: 'Invalid Access Token',
                 },
                 401
             )
@@ -271,7 +279,7 @@ export async function refreshToken(req: Request, res: Response) {
         return;
     }
 
-    const payload = verifyRefreshToken(refreshToken);
+    const payload = verifyAccessToken(token);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     const accessToken = generateAccessToken(payload);

@@ -57,6 +57,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
     const userId = req.params.id;
+
     const {
         name,
         email,
@@ -98,9 +99,18 @@ export const updateProfile = async (req: Request, res: Response) => {
                     pincode,
                 },
             });
-            //eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password: pass, role, createdAt, updatedAt, ...rest } = user;
-    
+            const {
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
+                password: pass,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                role,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                createdAt,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                updatedAt,
+                ...rest
+            } = user;
+
             res.send(
                 new ApiResponse(
                     {
@@ -112,7 +122,6 @@ export const updateProfile = async (req: Request, res: Response) => {
                 )
             );
         });
-
     } catch (error) {
         res.send(
             new ApiResponse(

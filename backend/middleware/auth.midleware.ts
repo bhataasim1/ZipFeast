@@ -41,15 +41,11 @@ export const generateAccessToken = (payload: PayloadType) => {
     });
 };
 
-export const generateRefreshToken = (payload: PayloadType) => {
-    return jwt.sign(payload, env.REFRESH_TOKEN_SECRET);
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const verifyRefreshToken = (token: any) => {
+export const verifyAccessToken = (token: any) => {
     return jwt.verify(
         token,
-        env.REFRESH_TOKEN_SECRET,
+        env.ACCESS_TOKEN_SECRET,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (err: any, user: any) => {
             if (err) {
