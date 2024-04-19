@@ -30,7 +30,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
         }
 
         //eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, roleId, createdAt, updatedAt, ...rest } = user;
+        const { password, role, createdAt, updatedAt, ...rest } = user;
 
         res.send(
             new ApiResponse(
@@ -99,7 +99,7 @@ export const updateProfile = async (req: Request, res: Response) => {
                 },
             });
             //eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password: pass, roleId, createdAt, updatedAt, ...rest } = user;
+            const { password: pass, role, createdAt, updatedAt, ...rest } = user;
     
             res.send(
                 new ApiResponse(

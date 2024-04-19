@@ -1,16 +1,20 @@
 POST http://localhost:3000/api/v1/user/register
+Content-Type: application/json
 
 {
     "name": "John Doe",
-    "email": "aasim@test.com",
+    "email": "aasim@test1.com",
     "password": "password",
-    "isMerchant": true
+    "confirmPassword": "password",
+    "role": 2
 }
 
+### Login
 
-GET http://localhost:3000/api/v1/user/login
+POST http://localhost:3000/api/v1/user/login
+Content-Type: application/json
 
 {
-    "email": "aasim@test.com",
-    "password": "password"
+    "email": "aasim1@zipfeast.com",
+    "password": "aasim"
 }

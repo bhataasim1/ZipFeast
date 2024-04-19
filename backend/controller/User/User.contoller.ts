@@ -61,7 +61,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 name,
                 email,
                 password: hashedPassword,
-                roleId: role || 3,
+                role
             },
         });
         res.send(
@@ -141,7 +141,7 @@ export const loginUser = async (req: Request, res: Response) => {
         const payload = {
             id: existingUser.id,
             email: existingUser.email,
-            role: existingUser.roleId,
+            role: existingUser.role,
         };
 
         const accessToken = generateAccessToken(payload);
@@ -155,7 +155,7 @@ export const loginUser = async (req: Request, res: Response) => {
         });
 
         //eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, createdAt, updatedAt, roleId, ...user } =
+        const { password, createdAt, updatedAt, role, ...user } =
             existingUser;
         res.send(
             new ApiResponse(

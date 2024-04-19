@@ -1,20 +1,24 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your updated Prisma schema file for MySQL.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+// Define the enum for user roles
+enum Role {
+  ADMIN
+  USER
+  MERCHANT
+}
+
+// User model represents customers of the app
 model User {
-  id           Int            @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name         String
   email        String         @unique
   password     String
@@ -24,8 +28,7 @@ model User {
   city         String?
   state        String?
   pincode      String?
-  role         Role           @relation(fields: [roleId], references: [id])
-  roleId       Int            @default(2)
+  role         Role           @default(USER)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   orders       Order[]
@@ -33,14 +36,9 @@ model User {
   Favorite     Favorite[]
 }
 
-model Role {
-  id    Int    @id @default(autoincrement())
-  name  String
-  users User[]
-}
-
+// Merchant model represents shop owners or sellers
 model Merchant {
-  id        Int       @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   name      String
   email     String    @unique
   password  String
@@ -56,19 +54,9 @@ model Merchant {
   Order     Order[]
 }
 
-// model Admin {
-//   id        Int      @id @default(autoincrement())
-//   name      String
-//   email     String   @unique
-//   password  String
-//   phone     String
-//   avatar    String?
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
+// Product model represents items available for purchase
 model Product {
-  id          Int         @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   name        String
   description String
   price       Float
@@ -84,6 +72,7 @@ model Product {
   OrderItem   OrderItem[]
 }
 
+// Order model represents a placed order by a User
 model Order {
   id              Int         @id @default(autoincrement())
   user            User        @relation(fields: [userId], references: [id])
@@ -92,14 +81,16 @@ model Order {
   merchantId      Int
   totalQuantity   Int
   totalAmount     Float
-  orderStatus     String
+  orderStatus     String // Use string field for order status
   deliveryAddress String
   paymentMethod   String
   items           OrderItem[]
   products        Product[]
   createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
+// OrderItem model represents items included in an order
 model OrderItem {
   id        Int     @id @default(autoincrement())
   quantity  Int
@@ -109,8 +100,9 @@ model OrderItem {
   orderId   Int
 }
 
+// Image model represents images associated with a product
 model Image {
-  id         Int       @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   url        String
   product    Product   @relation(fields: [productId], references: [id])
   productId  Int
@@ -120,8 +112,9 @@ model Image {
   favoriteId Int?
 }
 
+// RefreshToken model represents refresh tokens for user authentication
 model RefreshToken {
-  id        Int       @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   token     String    @unique
   userId    Int?
   user      User?     @relation(fields: [userId], references: [id])
@@ -130,6 +123,7 @@ model RefreshToken {
   updatedAt DateTime  @updatedAt
 }
 
+// Favorite model represents user's favorite products
 model Favorite {
   id          Int      @id @default(autoincrement())
   name        String
