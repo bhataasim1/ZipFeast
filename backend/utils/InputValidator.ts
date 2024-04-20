@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, validationResult, ValidationChain } from 'express-validator';
 
-class UserProfileValidator {
+export class InputValidator {
     private req: Request;
     private validators: ValidationChain[];
 
@@ -128,6 +128,20 @@ class UserProfileValidator {
         return this;
     }
 
+    validateStoreName() {
+        this.validators.push(
+            body('storeName')
+                .optional()
+                .isString()
+                .escape()
+                .notEmpty()
+                .withMessage('Store name is required')
+                .isLength({ min: 3 })
+                .withMessage('Store name should be at least 3 characters')
+        );
+        return this;
+    }
+
     async validate(req: Request, res: Response, next: NextFunction) {
         try {
             await Promise.all(
@@ -148,5 +162,3 @@ class UserProfileValidator {
         }
     }
 }
-
-export default UserProfileValidator;

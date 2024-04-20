@@ -13,7 +13,6 @@ datasource db {
 enum Role {
   ADMIN
   USER
-  MERCHANT
 }
 
 // User model represents customers of the app
@@ -38,20 +37,21 @@ model User {
 
 // Merchant model represents shop owners or sellers
 model Merchant {
-  id          Int           @id @default(autoincrement())
-  name        String
-  email       String        @unique
-  password    String
-  phone       String
-  avatar      String
-  address     String
-  city        String
-  state       String
-  pincode     String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  products    Product[]
-  Order       Order[]
+  id        Int       @id @default(autoincrement())
+  storeName String    @unique @default("ZipFeast Store")
+  name      String
+  email     String    @unique
+  password  String
+  phone     String?
+  avatar    String?
+  address   String?
+  city      String?
+  state     String?
+  pincode   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+  Order     Order[]
 }
 
 // Product model represents items available for purchase
@@ -115,11 +115,11 @@ model Image {
 
 // AccessToken model represents refresh tokens for user authentication
 model AccessToken {
-  token      String    @unique @db.VarChar(255)
-  userId     Int?
-  user       User?     @relation(fields: [userId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  token     String   @unique @db.VarChar(255)
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Favorite model represents user's favorite products

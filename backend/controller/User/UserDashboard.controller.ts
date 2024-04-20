@@ -1,8 +1,9 @@
 import { prisma } from '../../prisma/Schema';
 import { Request, Response } from 'express';
 import { ApiResponse, userAuth } from '../../middleware';
-import UserProfileValidator from '../../utils/UserProfileValidator';
-import { UserProfile } from '../../types'; 
+import { InputValidator } from '../../utils/InputValidator';
+import { UserProfileType } from '../../types';
+import bcrypt from 'bcrypt';
 
 export const getUserProfile = async (req: Request, res: Response) => {
     const userId = req.params.id;
@@ -62,15 +63,15 @@ export const updateProfile = async (req: Request, res: Response) => {
         name,
         email,
         password,
-        // avatar,
         phone,
         address,
         city,
         state,
         pincode,
-    }: UserProfile = req.body;
+    }: UserProfileType = req.body;
     try {
-        const validator = new UserProfileValidator(req);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const validator = new InputValidator(req);
         validator
             .validateName()
             .ValidateEmail()
@@ -83,11 +84,10 @@ export const updateProfile = async (req: Request, res: Response) => {
             .validatePincode();
 
         await validator.validate(req, res, async () => {
-            const userData: UserProfile = {
+            const userData: UserProfileType = {
                 name,
                 email,
-                password,
-                // avatar,
+                password: hashedPassword,
                 phone,
                 address,
                 city,
@@ -105,7 +105,17 @@ export const updateProfile = async (req: Request, res: Response) => {
             });
 
             //eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password: pass, role, createdAt, updatedAt, ...rest } = user;
+            const {
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
+                password: pass,
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
+                role,
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
+                createdAt,
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
+                updatedAt,
+                ...rest
+            } = user;
 
             res.send(
                 new ApiResponse(

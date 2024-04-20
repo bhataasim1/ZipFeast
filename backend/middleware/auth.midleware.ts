@@ -3,14 +3,9 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import { BaseEnvironment } from '../Environment';
 import jwt from 'jsonwebtoken';
+import { PayloadType } from '../types';
 
 const env = new BaseEnvironment();
-
-export type PayloadType = {
-    id: number | string;
-    email: string;
-    role?: string | number;
-};
 
 export const authMiddleware = (
     req: Request,
