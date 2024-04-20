@@ -8,9 +8,9 @@ import {
     protectedRoutes,
     updateProfile,
 } from '../../controller';
-import { authorizedUser, upload } from '../../middleware';
+import { authorizedUser, UploadFilesMiddleware } from '../../middleware';
 
-
+const upload = UploadFilesMiddleware.getInstance()
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.use(protectedRoutes);
 router.get('/profile/:id', authorizedUser, getUserProfile);
 router.post(
     '/profile/update/:id',
-    upload.single('avatar'),
+    upload.avatar,
     authorizedUser,
     updateProfile
 );

@@ -9,3 +9,8 @@ export type UserProfile = {
     state: string;
     pincode: string;
 };
+
+export const allowdFileTypes = {
+    avatar: ['image/jpeg', 'image/jpg', 'image/png'],
+    files: ['application/pdf'],
+};
