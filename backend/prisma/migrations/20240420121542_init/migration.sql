@@ -1,7 +1,0 @@
--- AlterTable
-ALTER TABLE `Merchant` MODIFY `phone` VARCHAR(191) NULL,
-    MODIFY `avatar` VARCHAR(191) NULL,
-    MODIFY `address` VARCHAR(191) NULL,
-    MODIFY `city` VARCHAR(191) NULL,
-    MODIFY `state` VARCHAR(191) NULL,
-    MODIFY `pincode` VARCHAR(191) NULL;

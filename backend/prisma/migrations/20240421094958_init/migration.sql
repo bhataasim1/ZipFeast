@@ -10,7 +10,7 @@ CREATE TABLE `User` (
     `city` VARCHAR(191) NULL,
     `state` VARCHAR(191) NULL,
     `pincode` VARCHAR(191) NULL,
-    `role` ENUM('ADMIN', 'USER', 'MERCHANT') NOT NULL DEFAULT 'USER',
+    `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -21,18 +21,20 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Merchant` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `storeName` VARCHAR(191) NOT NULL DEFAULT 'ZipFeast Store',
     `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `phone` VARCHAR(191) NOT NULL,
-    `avatar` VARCHAR(191) NOT NULL,
-    `address` VARCHAR(191) NOT NULL,
-    `city` VARCHAR(191) NOT NULL,
-    `state` VARCHAR(191) NOT NULL,
-    `pincode` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
+    `avatar` VARCHAR(191) NULL,
+    `address` VARCHAR(191) NULL,
+    `city` VARCHAR(191) NULL,
+    `state` VARCHAR(191) NULL,
+    `pincode` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Merchant_storeName_key`(`storeName`),
     UNIQUE INDEX `Merchant_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -92,13 +94,14 @@ CREATE TABLE `Image` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `AccessToken` (
+CREATE TABLE `RefreshToken` (
     `token` VARCHAR(255) NOT NULL,
     `userId` INTEGER NULL,
+    `merchantId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `AccessToken_token_key`(`token`)
+    UNIQUE INDEX `RefreshToken_token_key`(`token`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -145,7 +148,10 @@ ALTER TABLE `Image` ADD CONSTRAINT `Image_productId_fkey` FOREIGN KEY (`productI
 ALTER TABLE `Image` ADD CONSTRAINT `Image_favoriteId_fkey` FOREIGN KEY (`favoriteId`) REFERENCES `Favorite`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `AccessToken` ADD CONSTRAINT `AccessToken_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `RefreshToken` ADD CONSTRAINT `RefreshToken_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `RefreshToken` ADD CONSTRAINT `RefreshToken_merchantId_fkey` FOREIGN KEY (`merchantId`) REFERENCES `Merchant`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Favorite` ADD CONSTRAINT `Favorite_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -3,28 +3,28 @@ import {
     registerUser,
     loginUser,
     logOut,
-    accessToken,
+    refreshToken,
     getUserProfile,
     protectedRoutes,
     updateProfile,
 } from '../../controller';
-import { authorizedUser, UploadFilesMiddleware } from '../../middleware';
+import { authorizedUser } from '../../middleware';
 
-const upload = UploadFilesMiddleware.getInstance()
+// const upload = UploadFilesMiddleware.getInstance()
 
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logOut);
-router.post('/token', accessToken);
+router.post('/token', refreshToken);
 // router.put('/update/:id', updateProfile);
 
 router.use(protectedRoutes);
 router.get('/profile/:id', authorizedUser, getUserProfile);
 router.post(
     '/profile/update/:id',
-    upload.avatar,
+    // upload.avatar,
     authorizedUser,
     updateProfile
 );

@@ -11,7 +11,7 @@ export const validateToken = async (
     const accessToken = authorizationHeader.replace('Bearer ', '');
 
     try {
-        const existingAccessToken = await prisma.accessToken.findFirst({
+        const existingAccessToken = await prisma.refreshToken.findFirst({
             where: {
                 token: accessToken,
                 userId: userId,

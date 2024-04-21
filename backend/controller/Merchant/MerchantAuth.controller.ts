@@ -1,18 +1,15 @@
-import express, { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import { prisma } from '../../prisma/Schema';
 import bcrypt from 'bcrypt';
-import { ApiResponse, generateAccessToken } from '../../middleware';
+import {
+    ApiResponse,
+    generateAccessToken,
+    generateRefreshToken,
+    verifyRefreshToken,
+} from '../../middleware';
 import { BaseInputType, MerchantProfileType, PayloadType } from '../../types';
-import { InputValidator } from '../../utils/InputValidator';
 
-export class MerchantController {
-    public router: Router;
-
-    constructor() {
-        this.router = express.Router();
-        this.inititlizeRoutes(this, this.router);
-    }
-
+export class MerchantAuthController {
     public async registerMerchant(req: Request, res: Response) {
         const {
             storeName,
@@ -60,7 +57,7 @@ export class MerchantController {
                     new ApiResponse(
                         {
                             status: 'error',
-                            message: 'User already exists',
+                            message: 'Merchant already exists',
                         },
                         401
                     )
@@ -80,7 +77,7 @@ export class MerchantController {
                 new ApiResponse(
                     {
                         status: 'success',
-                        message: 'User created successfully',
+                        message: 'Merchant created successfully',
                     },
                     201
                 )
@@ -117,102 +114,9 @@ export class MerchantController {
         }
 
         try {
-            const existingUser = await prisma.merchant.findUnique({
-                where: {
-                    email: email,
-                },
-            });
-
-            if (!existingUser) {
-                res.send(
-                    new ApiResponse(
-                        {
-                            status: 'error',
-                            message: 'Merchant does not exist',
-                        },
-                        401
-                    )
-                );
-                return;
-            }
-
-            const isPasswordValid = await bcrypt.compare(
-                password,
-                existingUser.password
-            );
-
-            if (!isPasswordValid) {
-                res.send(
-                    new ApiResponse(
-                        {
-                            status: 'error',
-                            message: 'Invalid credentials',
-                        },
-                        401
-                    )
-                );
-                return;
-            }
-
-            const payload: PayloadType = {
-                id: existingUser.id,
-                email: existingUser.email,
-            };
-
-            const accessToken = generateAccessToken(payload);
-
-            const {
-                //eslint-disable-next-line
-                password: pass,
-                //eslint-disable-next-line
-                createdAt,
-                //eslint-disable-next-line
-                updatedAt,
-                ...merchant
-            } = existingUser;
-
-            res.send(
-                new ApiResponse(
-                    {
-                        status: 'success',
-                        message: 'User logged in successfully',
-                        merchant,
-                        accessToken,
-                    },
-                    200
-                )
-            );
-        } catch (error) {
-            res.send(
-                new ApiResponse(
-                    {
-                        status: 'error',
-                        message: 'An error occurred',
-                        error: error,
-                    },
-                    500
-                )
-            );
-        }
-    }
-
-    public async updateMerchant(req: Request, res: Response) {
-        const { id } = req.params;
-        const {
-            storeName,
-            name,
-            email,
-            phone,
-            address,
-            city,
-            pincode,
-            state,
-        }: MerchantProfileType = req.body;
-
-        try {
             const existingMerchant = await prisma.merchant.findUnique({
                 where: {
-                    id: Number(id),
+                    email: email,
                 },
             });
 
@@ -229,49 +133,56 @@ export class MerchantController {
                 return;
             }
 
-            const validator = new InputValidator(req);
-            validator
-                .validateStoreName()
-                .validateName()
-                .ValidateEmail()
-                .validatePassword()
-                .validatePhone()
-                .validateAddress()
-                .validateCity()
-                .validateState()
-                .validatePincode();
+            const isPasswordValid = await bcrypt.compare(
+                password,
+                existingMerchant.password
+            );
 
-            await validator.validate(req, res, async () => {
-                //TODO: Implement the Type Checking here
-                const merchant = {
-                    storeName,
-                    name,
-                    email,
-                    phone,
-                    address,
-                    city,
-                    pincode,
-                    state,
-                };
-                if (req.file) {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    merchant.avatar = req.file.path;
-                }
+            if (!isPasswordValid) {
+                res.send(
+                    new ApiResponse(
+                        {
+                            status: 'error',
+                            message: 'Invalid credentials',
+                        },
+                        401
+                    )
+                );
+                return;
+            }
 
-                await prisma.merchant.update({
-                    where: {
-                        id: Number(id),
-                    },
-                    data: merchant,
-                });
+            const payload: PayloadType = {
+                id: existingMerchant.id,
+                email: existingMerchant.email,
+            };
+
+            const accessToken = generateAccessToken(payload);
+            const refreshToken = generateRefreshToken(payload);
+            await prisma.refreshToken.create({
+                data: {
+                    token: refreshToken,
+                    merchantId: existingMerchant.id,
+                },
             });
+
+            const {
+                //eslint-disable-next-line
+                password: pass,
+                //eslint-disable-next-line
+                createdAt,
+                //eslint-disable-next-line
+                updatedAt,
+                ...merchant
+            } = existingMerchant;
 
             res.send(
                 new ApiResponse(
                     {
                         status: 'success',
-                        message: 'Merchant updated successfully',
+                        message: 'User logged in successfully',
+                        merchant,
+                        accessToken,
+                        refreshToken,
                     },
                     200
                 )
@@ -290,9 +201,53 @@ export class MerchantController {
         }
     }
 
-    private inititlizeRoutes(instance: MerchantController, router: Router) {
-        router.post('/register', instance.registerMerchant);
-        router.post('/login', instance.loginMerchant);
-        router.post('/profile/update/:id', instance.updateMerchant);
+    public async refreshToken(req: Request, res: Response) {
+        const token: string = req.body.token;
+
+        if (!token) {
+            res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Access Token is required',
+                    },
+                    400
+                )
+            );
+            return;
+        }
+        const existingAccessToken = await prisma.refreshToken.findFirst({
+            where: {
+                token: token,
+            },
+        });
+
+        if (!existingAccessToken) {
+            res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Invalid Access Token',
+                    },
+                    401
+                )
+            );
+            return;
+        }
+
+        const payload = verifyRefreshToken(token);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-expect-error
+        const accessToken = generateAccessToken(payload);
+        res.send(
+            new ApiResponse(
+                {
+                    status: 'success',
+                    message: 'Access Token generated successfully',
+                    accessToken,
+                },
+                200
+            )
+        );
     }
 }

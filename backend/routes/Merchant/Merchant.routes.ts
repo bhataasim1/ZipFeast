@@ -1,6 +1,30 @@
-import { MerchantController } from "../../controller";
+import express, { Router } from 'express';
+import { MerchantAuthController } from '../../controller';
+import { merchantAuth } from '../../middleware';
+import { MerchantProfileController } from '../../controller/Merchant/MerchantProfile.controller';
 
-export const merchantRoutes = new MerchantController();
+const router: Router = express.Router();
+
+// const upload = UploadFilesMiddleware.getInstance()
+
+const merchantAuthController = new MerchantAuthController();
+const merchantProfileCotroller = new MerchantProfileController();
+
+router.post('/register', merchantAuthController.registerMerchant);
+router.post('/login', merchantAuthController.loginMerchant);
+router.post('/token', merchantAuthController.refreshToken);
+router.post(
+    '/profile/update/:id',
+    merchantAuth,
+    merchantProfileCotroller.updateMerchant
+);
+router.post(
+    '/profile/upload/avatar/:id',
+    merchantAuth,
+    merchantProfileCotroller.uploadMerchantAvatar
+);
+
+export default router;
 
 // export const initializeRoutes = (router: Router) => {
 //     router.post('/merchant/register', merchantController.register);

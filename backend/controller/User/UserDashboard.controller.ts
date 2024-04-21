@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { ApiResponse, userAuth } from '../../middleware';
 import { InputValidator } from '../../utils/InputValidator';
 import { UserProfileType } from '../../types';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 export const getUserProfile = async (req: Request, res: Response) => {
     const userId = req.params.id;
@@ -62,7 +62,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     const {
         name,
         email,
-        password,
+        // password,
         phone,
         address,
         city,
@@ -70,7 +70,7 @@ export const updateProfile = async (req: Request, res: Response) => {
         pincode,
     }: UserProfileType = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // const hashedPassword = await bcrypt.hash(password, 10);
         const validator = new InputValidator(req);
         validator
             .validateName()
@@ -84,10 +84,10 @@ export const updateProfile = async (req: Request, res: Response) => {
             .validatePincode();
 
         await validator.validate(req, res, async () => {
-            const userData: UserProfileType = {
+            const userData = {
                 name,
                 email,
-                password: hashedPassword,
+                // password,
                 phone,
                 address,
                 city,
@@ -95,6 +95,8 @@ export const updateProfile = async (req: Request, res: Response) => {
                 pincode,
             };
             if (req.file) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
                 userData.avatar = req.file?.path;
             }
             const user = await prisma.user.update({

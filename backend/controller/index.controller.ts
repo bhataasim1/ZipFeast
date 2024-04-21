@@ -1,15 +1,8 @@
-import express, { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import { ApiResponse } from '../middleware';
 import { prisma } from '../prisma/Schema';
 
 export class IndexController {
-    public router: Router;
-
-    constructor() {
-        this.router = express.Router();
-        this.inititlizeRoutes(this, this.router);
-    }
-
     public async getMerchants(req: Request, res: Response) {
         const merchant = await prisma.merchant.findMany({
             include: {
@@ -72,10 +65,5 @@ export class IndexController {
                 200
             )
         );
-    }
-
-    public inititlizeRoutes(controller: IndexController, router: Router) {
-        router.get('/merchants', controller.getMerchants);
-        router.get('/merchant/:storeName', controller.getMerchantByName);
     }
 }
