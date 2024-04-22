@@ -16,7 +16,7 @@ export class IndexController {
         const { password, createdAt, updatedAt, ...merchantData } = merchant;
         //TODO: This line is not working as expected. this is returning the merchant data with password etc
 
-        res.send(
+        return res.send(
             new ApiResponse(
                 {
                     status: 'success',
@@ -40,7 +40,7 @@ export class IndexController {
             },
         });
         if (!merchant) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -49,13 +49,12 @@ export class IndexController {
                     404
                 )
             );
-            return;
         }
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unused-vars
         const { password, createdAt, updatedAt, ...merchantData } = merchant;
 
-        res.send(
+        return res.send(
             new ApiResponse(
                 {
                     status: 'success',

@@ -17,7 +17,7 @@ app.use(`${apiVersion}/user`, UserRoutes);
 app.use(`${apiVersion}/merchant`, merchantRoutes);
 
 app.get('/health-check', (req, res) => {
-    res.send('I am alive!');
+    return res.send('I am alive!');
 });
 
 app.listen(env.PORT, () => {

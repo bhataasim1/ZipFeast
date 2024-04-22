@@ -20,7 +20,7 @@ export class MerchantAuthController {
         }: MerchantProfileType = req.body;
 
         if (!storeName || !name || !email || !password || !confirmPassword) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -33,7 +33,7 @@ export class MerchantAuthController {
         }
 
         if (password !== confirmPassword) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -53,7 +53,7 @@ export class MerchantAuthController {
             });
 
             if(existingUser?.storeName === storeName) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -66,7 +66,7 @@ export class MerchantAuthController {
             }
 
             if (existingUser?.email === email) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -86,7 +86,7 @@ export class MerchantAuthController {
                 },
             });
 
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'success',
@@ -96,7 +96,7 @@ export class MerchantAuthController {
                 )
             );
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -114,7 +114,7 @@ export class MerchantAuthController {
         const { email, password }: BaseInputType = req.body;
 
         if (!email || !password) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -134,7 +134,7 @@ export class MerchantAuthController {
             });
 
             if (!existingMerchant) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -152,7 +152,7 @@ export class MerchantAuthController {
             );
 
             if (!isPasswordValid) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -188,7 +188,7 @@ export class MerchantAuthController {
                 ...merchant
             } = existingMerchant;
 
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'success',
@@ -201,7 +201,7 @@ export class MerchantAuthController {
                 )
             );
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -218,7 +218,7 @@ export class MerchantAuthController {
         const token: string = req.body.token;
 
         if (!token) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -236,7 +236,7 @@ export class MerchantAuthController {
         });
 
         if (!existingAccessToken) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -252,7 +252,7 @@ export class MerchantAuthController {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-expect-error
         const accessToken = generateAccessToken(payload);
-        res.send(
+        return res.send(
             new ApiResponse(
                 {
                     status: 'success',

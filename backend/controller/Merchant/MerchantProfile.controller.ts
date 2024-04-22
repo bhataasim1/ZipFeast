@@ -30,7 +30,7 @@ export class MerchantProfileController {
             });
 
             if (!existingMerchant) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -39,7 +39,6 @@ export class MerchantProfileController {
                         401
                     )
                 );
-                return;
             }
 
             const validator = new InputValidator(req);
@@ -73,7 +72,7 @@ export class MerchantProfileController {
                     },
                     data: merchant,
                 });
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
@@ -85,7 +84,7 @@ export class MerchantProfileController {
                 );
             });
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -120,7 +119,7 @@ export class MerchantProfileController {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             uploadAvatar(req, res, async (err: any) => {
                 if (err) {
-                    res.send(
+                    return res.send(
                         new ApiResponse(
                             {
                                 status: 'error',
@@ -155,7 +154,7 @@ export class MerchantProfileController {
                     },
                 });
 
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
@@ -168,7 +167,7 @@ export class MerchantProfileController {
             });
         } catch (error) {
             console.error('Error uploading avatar:', error);
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',

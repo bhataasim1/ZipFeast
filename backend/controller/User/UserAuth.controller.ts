@@ -20,7 +20,7 @@ export class UserAuthController {
         }: UserProfileType = req.body;
 
         if (!name || !email || !password || !confirmPassword) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -29,11 +29,10 @@ export class UserAuthController {
                     400
                 )
             );
-            return;
         }
 
         if (password !== confirmPassword) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -42,7 +41,6 @@ export class UserAuthController {
                     400
                 )
             );
-            return;
         }
 
         try {
@@ -53,7 +51,7 @@ export class UserAuthController {
             });
 
             if (existingUser) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -73,7 +71,7 @@ export class UserAuthController {
                 },
             });
 
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'success',
@@ -83,7 +81,7 @@ export class UserAuthController {
                 )
             );
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -101,7 +99,7 @@ export class UserAuthController {
         const { email, password }: BaseInputType = req.body;
 
         if (!email || !password) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -110,7 +108,6 @@ export class UserAuthController {
                     400
                 )
             );
-            return;
         }
 
         try {
@@ -121,7 +118,7 @@ export class UserAuthController {
             });
 
             if (!existingUser) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -130,7 +127,7 @@ export class UserAuthController {
                         401
                     )
                 );
-                return;
+
             }
 
             const isPasswordValid = await bcrypt.compare(
@@ -139,7 +136,7 @@ export class UserAuthController {
             );
 
             if (!isPasswordValid) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -148,7 +145,6 @@ export class UserAuthController {
                         401
                     )
                 );
-                return;
             }
 
             const payload: PayloadType = {
@@ -178,7 +174,7 @@ export class UserAuthController {
                 ...user
             } = existingUser;
 
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'success',
@@ -191,7 +187,7 @@ export class UserAuthController {
                 )
             );
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -216,7 +212,7 @@ export class UserAuthController {
         }
 
         if (!accessToken) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -225,7 +221,6 @@ export class UserAuthController {
                     400
                 )
             );
-            return;
         }
         await prisma.refreshToken
             .delete({
@@ -234,7 +229,7 @@ export class UserAuthController {
                 },
             })
             .then(() => {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
@@ -245,7 +240,7 @@ export class UserAuthController {
                 );
             })
             .catch(() => {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -269,7 +264,7 @@ export class UserAuthController {
         }
 
         if (!token) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -278,7 +273,6 @@ export class UserAuthController {
                     400
                 )
             );
-            return;
         }
         const existingAccessToken = await prisma.refreshToken.findFirst({
             where: {
@@ -287,7 +281,7 @@ export class UserAuthController {
         });
 
         if (!existingAccessToken) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -296,14 +290,13 @@ export class UserAuthController {
                     401
                 )
             );
-            return;
         }
 
         const payload = verifyRefreshToken(token);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-expect-error
         const accessToken = generateAccessToken(payload);
-        res.send(
+        return res.send(
             new ApiResponse(
                 {
                     status: 'success',

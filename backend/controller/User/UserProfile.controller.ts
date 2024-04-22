@@ -22,7 +22,7 @@ export class UserProfileController {
                 },
             });
             if (!user) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -37,7 +37,7 @@ export class UserProfileController {
             //eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, role, createdAt, updatedAt, ...rest } = user;
 
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'success',
@@ -48,7 +48,7 @@ export class UserProfileController {
                 )
             );
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -80,7 +80,7 @@ export class UserProfileController {
             });
 
             if (!existingUser) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -89,7 +89,6 @@ export class UserProfileController {
                         401
                     )
                 );
-                return;
             }
 
             const validator = new InputValidator(req);
@@ -122,19 +121,23 @@ export class UserProfileController {
                     },
                     data: user,
                 });
-                res.send(
+
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { password, createdAt, updatedAt, role, ...rest } =
+                    updatedUser;
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
-                            message: 'Merchant updated successfully',
-                            updatedUser,
+                            message: 'User updated successfully',
+                            rest,
                         },
                         200
                     )
                 );
             });
         } catch (error) {
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
@@ -158,7 +161,7 @@ export class UserProfileController {
             });
 
             if (!user) {
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
@@ -175,7 +178,7 @@ export class UserProfileController {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             uploadAvatar(req, res, async (err: any) => {
                 if (err) {
-                    res.send(
+                    return res.send(
                         new ApiResponse(
                             {
                                 status: 'error',
@@ -210,7 +213,7 @@ export class UserProfileController {
                     },
                 });
 
-                res.send(
+                return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
@@ -223,7 +226,7 @@ export class UserProfileController {
             });
         } catch (error) {
             console.error('Error uploading avatar:', error);
-            res.send(
+            return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
