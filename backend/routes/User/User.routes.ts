@@ -1,32 +1,34 @@
-import express from 'express';
-import {
-    registerUser,
-    loginUser,
-    logOut,
-    refreshToken,
-    getUserProfile,
-    protectedRoutes,
-    updateProfile,
-} from '../../controller';
-import { authorizedUser } from '../../middleware';
+import express, { Router } from 'express';
+import { UserAuthController, UserProfileController } from '../../controller';
+import { userAuth, authorizedUser } from '../../middleware';
 
-// const upload = UploadFilesMiddleware.getInstance()
+const router: Router = express.Router();
 
-const router = express.Router();
+const userAuthController = new UserAuthController();
+const userProfileController = new UserProfileController();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.post('/logout', logOut);
-router.post('/token', refreshToken);
-// router.put('/update/:id', updateProfile);
+router.post('/register', userAuthController.registerUser);
+router.post('/login', userAuthController.loginUser);
+router.post('/logout', userAuthController.logOutUser);
+router.post('/token', userAuthController.refreshToken);
 
-router.use(protectedRoutes);
-router.get('/profile/:id', authorizedUser, getUserProfile);
+router.get(
+    '/profile/:id',
+    userAuth,
+    authorizedUser,
+    userProfileController.getUserProfile
+);
 router.post(
     '/profile/update/:id',
-    // upload.avatar,
+    userAuth,
     authorizedUser,
-    updateProfile
+    userProfileController.updateUser
+);
+router.post(
+    '/profile/upload/avatar/:id',
+    userAuth,
+    authorizedUser,
+    userProfileController.uploadUserAvatar
 );
 
 export default router;

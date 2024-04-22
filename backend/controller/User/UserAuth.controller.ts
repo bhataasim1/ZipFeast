@@ -7,19 +7,19 @@ import {
     generateRefreshToken,
     verifyRefreshToken,
 } from '../../middleware';
-import { BaseInputType, MerchantProfileType, PayloadType } from '../../types';
+import { BaseInputType, UserProfileType, PayloadType } from '../../types';
 
-export class MerchantAuthController {
-    public async registerMerchant(req: Request, res: Response) {
+export class UserAuthController {
+    public async registerUser(req: Request, res: Response) {
         const {
-            storeName,
             name,
             email,
             password,
             confirmPassword,
-        }: MerchantProfileType = req.body;
+            role,
+        }: UserProfileType = req.body;
 
-        if (!storeName || !name || !email || !password || !confirmPassword) {
+        if (!name || !email || !password || !confirmPassword) {
             res.send(
                 new ApiResponse(
                     {
@@ -46,43 +46,30 @@ export class MerchantAuthController {
         }
 
         try {
-            const existingUser = await prisma.merchant.findFirst({
+            const existingUser = await prisma.user.findFirst({
                 where: {
-                    OR: [{ email }, { storeName }],
+                    email: email,
                 },
             });
 
-            if(existingUser?.storeName === storeName) {
+            if (existingUser) {
                 res.send(
                     new ApiResponse(
                         {
                             status: 'error',
-                            message: 'Store name already exists',
-                        },
-                        401
-                    )
-                );
-                return;
-            }
-
-            if (existingUser?.email === email) {
-                res.send(
-                    new ApiResponse(
-                        {
-                            status: 'error',
-                            message: 'Email already exists',
+                            message: 'User already exists',
                         },
                         401
                     )
                 );
             }
             const hashedPassword = await bcrypt.hash(password, 10);
-            await prisma.merchant.create({
+            await prisma.user.create({
                 data: {
-                    storeName,
                     name,
                     email,
                     password: hashedPassword,
+                    role,
                 },
             });
 
@@ -90,7 +77,7 @@ export class MerchantAuthController {
                 new ApiResponse(
                     {
                         status: 'success',
-                        message: 'Merchant created successfully',
+                        message: 'User created successfully',
                     },
                     201
                 )
@@ -109,7 +96,7 @@ export class MerchantAuthController {
         }
     }
 
-    public async loginMerchant(req: Request, res: Response) {
+    public async loginUser(req: Request, res: Response) {
         ///TODO: why the error doesent show up when name is missing from the BaseInputType
         const { email, password }: BaseInputType = req.body;
 
@@ -127,18 +114,18 @@ export class MerchantAuthController {
         }
 
         try {
-            const existingMerchant = await prisma.merchant.findUnique({
+            const existingUser = await prisma.user.findUnique({
                 where: {
                     email: email,
                 },
             });
 
-            if (!existingMerchant) {
+            if (!existingUser) {
                 res.send(
                     new ApiResponse(
                         {
                             status: 'error',
-                            message: 'Merchant does not exist',
+                            message: 'Invalid email or Password',
                         },
                         401
                     )
@@ -148,7 +135,7 @@ export class MerchantAuthController {
 
             const isPasswordValid = await bcrypt.compare(
                 password,
-                existingMerchant.password
+                existingUser.password
             );
 
             if (!isPasswordValid) {
@@ -165,8 +152,9 @@ export class MerchantAuthController {
             }
 
             const payload: PayloadType = {
-                id: existingMerchant.id,
-                email: existingMerchant.email,
+                id: existingUser.id,
+                email: existingUser.email,
+                role: existingUser.role,
             };
 
             const accessToken = generateAccessToken(payload);
@@ -174,7 +162,7 @@ export class MerchantAuthController {
             await prisma.refreshToken.create({
                 data: {
                     token: refreshToken,
-                    merchantId: existingMerchant.id,
+                    userId: existingUser.id,
                 },
             });
 
@@ -185,15 +173,17 @@ export class MerchantAuthController {
                 createdAt,
                 //eslint-disable-next-line
                 updatedAt,
-                ...merchant
-            } = existingMerchant;
+                //eslint-disable-next-line
+                role,
+                ...user
+            } = existingUser;
 
             res.send(
                 new ApiResponse(
                     {
                         status: 'success',
                         message: 'User logged in successfully',
-                        merchant,
+                        user,
                         accessToken,
                         refreshToken,
                     },
@@ -214,8 +204,69 @@ export class MerchantAuthController {
         }
     }
 
+    public async logOutUser(req: Request, res: Response) {
+        let accessToken: string = req.body.token; // in body use 'token: "accessToken"'
+        if (!accessToken && req.headers.authorization) {
+            const authHeader = req.headers.authorization;
+            const tokenParts = authHeader.split(' ');
+
+            if (tokenParts.length === 2 && tokenParts[0] === 'Bearer') {
+                accessToken = tokenParts[1];
+            }
+        }
+
+        if (!accessToken) {
+            res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Refresh Token is required',
+                    },
+                    400
+                )
+            );
+            return;
+        }
+        await prisma.refreshToken
+            .delete({
+                where: {
+                    token: accessToken,
+                },
+            })
+            .then(() => {
+                res.send(
+                    new ApiResponse(
+                        {
+                            status: 'success',
+                            message: 'User logged out successfully',
+                        },
+                        200
+                    )
+                );
+            })
+            .catch(() => {
+                res.send(
+                    new ApiResponse(
+                        {
+                            status: 'error',
+                            message: 'Invalid Token',
+                        },
+                        500
+                    )
+                );
+            });
+    }
+
     public async refreshToken(req: Request, res: Response) {
-        const token: string = req.body.token;
+        let token: string = req.body.token;
+        if (!token && req.headers.authorization) {
+            const authHeader = req.headers.authorization;
+            const tokenParts = authHeader.split(' ');
+
+            if (tokenParts.length === 2 && tokenParts[0] === 'Bearer') {
+                token = tokenParts[1];
+            }
+        }
 
         if (!token) {
             res.send(

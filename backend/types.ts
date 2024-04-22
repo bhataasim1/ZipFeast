@@ -1,21 +1,27 @@
 export type BaseInputType = {
-    name: string,
-    email: string,
-    password: string,
-    confirmPassword?: string,
-};
-
-export type UserProfileType = {
     name: string;
     email: string;
     password: string;
+    confirmPassword?: string;
+};
+
+enum Role {
+    USER = 'USER',
+    ADMIN = 'ADMIN',
+}
+
+export interface UserProfileType extends BaseInputType {
+    name: string;
+    email: string;
+    password: string;
+    role: Role;
     avatar?: string;
     phone: string;
     address: string;
     city: string;
     state: string;
     pincode: string;
-};
+}
 
 export interface MerchantProfileType extends BaseInputType {
     storeName: string;

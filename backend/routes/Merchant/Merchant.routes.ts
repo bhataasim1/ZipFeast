@@ -1,11 +1,11 @@
 import express, { Router } from 'express';
-import { MerchantAuthController } from '../../controller';
-import { merchantAuth } from '../../middleware';
-import { MerchantProfileController } from '../../controller/Merchant/MerchantProfile.controller';
+import {
+    MerchantAuthController,
+    MerchantProfileController,
+} from '../../controller';
+import { authorizedUser, merchantAuth } from '../../middleware';
 
 const router: Router = express.Router();
-
-// const upload = UploadFilesMiddleware.getInstance()
 
 const merchantAuthController = new MerchantAuthController();
 const merchantProfileCotroller = new MerchantProfileController();
@@ -16,11 +16,13 @@ router.post('/token', merchantAuthController.refreshToken);
 router.post(
     '/profile/update/:id',
     merchantAuth,
+    authorizedUser,
     merchantProfileCotroller.updateMerchant
 );
 router.post(
     '/profile/upload/avatar/:id',
     merchantAuth,
+    authorizedUser,
     merchantProfileCotroller.uploadMerchantAvatar
 );
 
