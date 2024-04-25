@@ -61,11 +61,11 @@ model Product {
   name        String
   description String
   price       Float
-  stock       Int
+  stock       Int?       @default(0)
   category    String
   merchant    Merchant    @relation(fields: [merchantId], references: [id])
   merchantId  Int
-  isAvailable Boolean
+  isAvailable Boolean     @default(true)
   image       Image[]
   order       Order[]
   createdAt   DateTime    @default(now())

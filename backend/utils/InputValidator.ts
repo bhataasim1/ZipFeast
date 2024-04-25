@@ -142,6 +142,53 @@ export class InputValidator {
         return this;
     }
 
+    validateDescription() {
+        this.validators.push(
+            body('description')
+                .optional()
+                .isString()
+                .escape()
+                .notEmpty()
+                .withMessage('Description is required')
+                .isLength({ min: 10 })
+                .withMessage('Description should be at least 10 characters')
+        );
+        return this;
+    }
+
+    validatePrice() {
+        this.validators.push(
+            body('price')
+                .optional()
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Price is required')
+        );
+        return this;
+    }
+
+    validateStock() {
+        this.validators.push(
+            body('stock')
+                .optional()
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Stock is required')
+        );
+        return this;
+    }
+
+    validateCategory() {
+        this.validators.push(
+            body('category')
+                .optional()
+                .isString()
+                .notEmpty()
+                .withMessage('Category is required')
+        );
+        return this;
+    }
+
     async validate(req: Request, res: Response, next: NextFunction) {
         try {
             await Promise.all(

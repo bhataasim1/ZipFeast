@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Product` MODIFY `stock` INTEGER NULL DEFAULT 0,
+    MODIFY `isAvailable` BOOLEAN NOT NULL DEFAULT true;
