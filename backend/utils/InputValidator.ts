@@ -189,6 +189,33 @@ export class InputValidator {
         return this;
     }
 
+    validateProductImages() {
+        this.validators.push(
+            body('productImages')
+                .optional()
+                .custom((value) => {
+                    if (!value) {
+                        return true;
+                    }
+                    if (value.length > 5) {
+                        throw new Error('Maximum of 5 images are allowed');
+                    }
+                    return true;
+                })
+        );
+        return this;
+    }
+
+    public validateProduct() {
+        this.validateName()
+            .validateDescription()
+            .validatePrice()
+            .validateStock()
+            .validateCategory()
+            .validateProductImages();
+        return this;
+    }
+
     async validate(req: Request, res: Response, next: NextFunction) {
         try {
             await Promise.all(

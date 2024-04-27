@@ -7,7 +7,7 @@ import {
     generateRefreshToken,
     verifyRefreshToken,
 } from '../../middleware';
-import { BaseInputType, MerchantProfileType, PayloadType } from '../../types';
+import { BaseInputType, MerchantProfileType, PayloadType } from '../../types/types';
 
 export class MerchantAuthController {
     public async registerMerchant(req: Request, res: Response) {

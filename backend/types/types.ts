@@ -1,3 +1,5 @@
+import { ProductType } from './product.types';
+
 export type BaseInputType = {
     name: string;
     email: string;
@@ -32,14 +34,6 @@ export interface MerchantProfileType extends BaseInputType {
     pincode: string;
     avatar?: string;
     products?: ProductType[];
-}
-
-export interface ProductType {
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    image?: string[];
 }
 
 export type PayloadType = {
