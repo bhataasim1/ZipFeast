@@ -7,7 +7,7 @@ import {
     generateRefreshToken,
     verifyRefreshToken,
 } from '../../middleware';
-import { BaseInputType, UserProfileType, PayloadType } from '../../types';
+import { BaseInputType, UserProfileType, PayloadType } from '../../types/types';
 
 export class UserAuthController {
     public async registerUser(req: Request, res: Response) {

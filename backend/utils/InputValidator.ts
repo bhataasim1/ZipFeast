@@ -142,6 +142,80 @@ export class InputValidator {
         return this;
     }
 
+    validateDescription() {
+        this.validators.push(
+            body('description')
+                .optional()
+                .isString()
+                .escape()
+                .notEmpty()
+                .withMessage('Description is required')
+                .isLength({ min: 10 })
+                .withMessage('Description should be at least 10 characters')
+        );
+        return this;
+    }
+
+    validatePrice() {
+        this.validators.push(
+            body('price')
+                .optional()
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Price is required')
+        );
+        return this;
+    }
+
+    validateStock() {
+        this.validators.push(
+            body('stock')
+                .optional()
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Stock is required')
+        );
+        return this;
+    }
+
+    validateCategory() {
+        this.validators.push(
+            body('category')
+                .optional()
+                .isString()
+                .notEmpty()
+                .withMessage('Category is required')
+        );
+        return this;
+    }
+
+    validateProductImages() {
+        this.validators.push(
+            body('productImages')
+                .optional()
+                .custom((value) => {
+                    if (!value) {
+                        return true;
+                    }
+                    if (value.length > 5) {
+                        throw new Error('Maximum of 5 images are allowed');
+                    }
+                    return true;
+                })
+        );
+        return this;
+    }
+
+    public validateProduct() {
+        this.validateName()
+            .validateDescription()
+            .validatePrice()
+            .validateStock()
+            .validateCategory()
+            .validateProductImages();
+        return this;
+    }
+
     async validate(req: Request, res: Response, next: NextFunction) {
         try {
             await Promise.all(

@@ -3,7 +3,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import { BaseEnvironment } from '../Environment';
 import jwt from 'jsonwebtoken';
-import { PayloadType } from '../types';
+import { PayloadType } from '../types/types';
 
 const env = new BaseEnvironment();
 

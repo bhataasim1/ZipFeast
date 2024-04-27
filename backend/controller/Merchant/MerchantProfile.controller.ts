@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/Schema';
-import { ApiResponse, upload } from '../../middleware';
-import { MerchantProfileType } from '../../types';
+import { ApiResponse } from '../../middleware';
+import { MerchantProfileType } from '../../types/types';
 import { InputValidator } from '../../utils/InputValidator';
 import { BaseEnvironment } from '../../Environment';
 import fs from 'fs';
@@ -114,57 +114,43 @@ export class MerchantProfileController {
                 });
             }
 
-            const uploadAvatar = upload('avatar');
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            uploadAvatar(req, res, async (err: any) => {
-                if (err) {
-                    return res.send(
-                        new ApiResponse(
-                            {
-                                status: 'error',
-                                message: 'An error occurred',
-                            },
-                            500
-                        )
-                    );
-                }
-
-                if (!req.file) {
-                    return res.status(400).json({
-                        status: 'error',
-                        message: 'Please upload an image file',
-                    });
-                }
-                ///TODO: I dont know when i use the new ApiResponse, the below avatar gives error
-
-                const newAvatar = req.file.filename;
-
-                if (merchant.avatar) {
-                    const existingAvatar = merchant.avatar;
-                    fs.unlinkSync(`${env.UPLOAD_DIR}/avatar/${existingAvatar}`);
-                }
-
-                const updatedMerchant = await prisma.merchant.update({
-                    where: {
-                        id: Number(id),
-                    },
-                    data: {
-                        avatar: newAvatar,
-                    },
-                });
-
+            const newAvatar = req.file?.filename;
+            if (!newAvatar) {
                 return res.send(
                     new ApiResponse(
                         {
-                            status: 'success',
-                            message: 'Avatar uploaded successfully',
-                            data: updatedMerchant,
+                            status: 'error',
+                            message: 'Please Upload a Valid Image',
                         },
-                        200
+                        401
                     )
                 );
+            }
+
+            if (merchant.avatar) {
+                const existingAvatar = merchant.avatar;
+                fs.unlinkSync(`${env.UPLOAD_DIR}/avatar/${existingAvatar}`);
+            }
+
+            const updatedMerchant = await prisma.merchant.update({
+                where: {
+                    id: Number(id),
+                },
+                data: {
+                    avatar: newAvatar,
+                },
             });
+
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'success',
+                        message: 'Avatar uploaded successfully',
+                        data: updatedMerchant,
+                    },
+                    200
+                )
+            );
         } catch (error) {
             console.error('Error uploading avatar:', error);
             return res.send(

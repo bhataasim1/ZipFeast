@@ -3,7 +3,7 @@ import {
     MerchantAuthController,
     MerchantProfileController,
 } from '../../controller';
-import { authorizedUser, merchantAuth } from '../../middleware';
+import { authorizedUser, merchantAuth, upload } from '../../middleware';
 
 const router: Router = express.Router();
 
@@ -23,6 +23,7 @@ router.post(
     '/profile/upload/avatar/:id',
     merchantAuth,
     authorizedUser,
+    upload('avatar'),
     merchantProfileCotroller.uploadMerchantAvatar
 );
 

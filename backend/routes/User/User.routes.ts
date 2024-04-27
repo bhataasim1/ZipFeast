@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { UserAuthController, UserProfileController } from '../../controller';
-import { userAuth, authorizedUser } from '../../middleware';
+import { userAuth, authorizedUser, upload } from '../../middleware';
 
 const router: Router = express.Router();
 
@@ -28,6 +28,7 @@ router.post(
     '/profile/upload/avatar/:id',
     userAuth,
     authorizedUser,
+    upload('avatar'),
     userProfileController.uploadUserAvatar
 );
 

@@ -4,6 +4,7 @@ import { BaseEnvironment } from '../Environment';
 import { prisma } from '../prisma/Schema';
 import { ApiResponse } from './apiResponse.middleware';
 import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 const env = new BaseEnvironment();
 
@@ -42,6 +43,8 @@ passport.use(
     })
 );
 
+
+///TODO: This is temporary, we need to remove this middleware
 export const authorizedUser = (
     req: Request,
     res: Response,
@@ -77,6 +80,46 @@ export const authorizedUser = (
                 )
             );
         }
+        next();
+    } catch (error) {
+        return res.send(
+            new ApiResponse(
+                {
+                    status: 'error',
+                    message: 'Something went wrong',
+                },
+                500
+            )
+        );
+    }
+};
+
+///TDOD: we need this authorizedUsers middleware instead of authorizedUser...
+///TODO: we need to remove the above authorizedUser middleware
+export const authorizedMerchants = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Unauthorized: User not authenticated',
+                    },
+                    401
+                )
+            );
+        }
+        const user = jwt.verify(token, env.ACCESS_TOKEN_SECRET) as {
+            id: number;
+        };
+        req.user = { id: user.id };
+
         next();
     } catch (error) {
         return res.send(

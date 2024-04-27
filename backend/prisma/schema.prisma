@@ -57,21 +57,21 @@ model Merchant {
 
 // Product model represents items available for purchase
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  stock       Int
-  category    String
-  merchant    Merchant    @relation(fields: [merchantId], references: [id])
-  merchantId  Int
-  isAvailable Boolean
-  image       Image[]
-  order       Order[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  Favorite    Favorite[]
-  OrderItem   OrderItem[]
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String
+  price        String
+  stock        String?        @default("0")
+  category     String
+  productImage String
+  merchant     Merchant    @relation(fields: [merchantId], references: [id])
+  merchantId   Int
+  isAvailable  Boolean     @default(true)
+  order        Order[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  Favorite     Favorite[]
+  OrderItem    OrderItem[]
 }
 
 // Order model represents a placed order by a User
@@ -102,18 +102,6 @@ model OrderItem {
   orderId   Int
 }
 
-// Image model represents images associated with a product
-model Image {
-  id         Int       @id @default(autoincrement())
-  url        String
-  product    Product   @relation(fields: [productId], references: [id])
-  productId  Int
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  Favorite   Favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId Int?
-}
-
 // AccessToken model represents refresh tokens for user authentication
 model RefreshToken {
   token      String    @unique @db.VarChar(255)
@@ -130,7 +118,6 @@ model Favorite {
   id          Int      @id @default(autoincrement())
   name        String
   description String
-  image       Image[]
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
   product     Product  @relation(fields: [productId], references: [id])
