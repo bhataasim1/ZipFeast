@@ -1,7 +1,6 @@
 import express, { Router } from 'express';
 import { UserAuthController, UserProfileController } from '../../controller';
-import { userAuth, authorizedUser, upload } from '../../middleware';
-
+import { userAuth, authorizedUsers, upload } from '../../middleware';
 const router: Router = express.Router();
 
 const userAuthController = new UserAuthController();
@@ -15,19 +14,19 @@ router.post('/token', userAuthController.refreshToken);
 router.get(
     '/profile/:id',
     userAuth,
-    authorizedUser,
+    authorizedUsers,
     userProfileController.getUserProfile
 );
 router.post(
     '/profile/update/:id',
     userAuth,
-    authorizedUser,
+    authorizedUsers,
     userProfileController.updateUser
 );
 router.post(
     '/profile/upload/avatar/:id',
     userAuth,
-    authorizedUser,
+    authorizedUsers,
     upload('avatar'),
     userProfileController.uploadUserAvatar
 );
