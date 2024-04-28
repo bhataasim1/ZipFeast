@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { UserOrderController } from '../../controller';
-import { authorizedMerchants, userAuth } from '../../middleware';
+import { authorizedUser, userAuth } from '../../middleware';
 
 const userOrderController = new UserOrderController();
 
@@ -9,35 +9,35 @@ const router: Router = express.Router();
 router.get(
     '/all',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     userOrderController.getAllUserOrder
 );
 
 router.get(
     '/:id',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     userOrderController.getUserOrderById
 );
 
 router.post(
     '/create/:productId',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     userOrderController.createOrder
 );
 
 router.put(
     '/update/:orderId',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     userOrderController.updateOrder
 );
 
 router.delete(
     '/delete/:orderId',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     userOrderController.cancelOrder
 );
 

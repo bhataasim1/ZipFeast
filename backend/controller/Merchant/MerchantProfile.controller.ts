@@ -10,7 +10,9 @@ const env = new BaseEnvironment();
 
 export class MerchantProfileController {
     public async updateMerchant(req: Request, res: Response) {
-        const { id } = req.params;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const merchantId = req.user?.id
         const {
             storeName,
             name,
@@ -25,7 +27,7 @@ export class MerchantProfileController {
         try {
             const existingMerchant = await prisma.merchant.findUnique({
                 where: {
-                    id: Number(id),
+                    id: Number(merchantId),
                 },
             });
 
@@ -68,7 +70,7 @@ export class MerchantProfileController {
 
                 const m = await prisma.merchant.update({
                     where: {
-                        id: Number(id),
+                        id: Number(merchantId),
                     },
                     data: merchant,
                 });
@@ -98,12 +100,14 @@ export class MerchantProfileController {
     }
 
     public async uploadMerchantAvatar(req: Request, res: Response) {
-        const { id } = req.params;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const merchantId = req.user?.id
 
         try {
             const merchant = await prisma.merchant.findUnique({
                 where: {
-                    id: Number(id),
+                    id: Number(merchantId),
                 },
             });
 
@@ -134,7 +138,7 @@ export class MerchantProfileController {
 
             const updatedMerchant = await prisma.merchant.update({
                 where: {
-                    id: Number(id),
+                    id: Number(merchantId),
                 },
                 data: {
                     avatar: newAvatar,

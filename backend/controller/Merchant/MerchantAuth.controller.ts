@@ -29,7 +29,6 @@ export class MerchantAuthController {
                     400
                 )
             );
-            return;
         }
 
         if (password !== confirmPassword) {
@@ -42,7 +41,6 @@ export class MerchantAuthController {
                     400
                 )
             );
-            return;
         }
 
         try {
@@ -62,7 +60,6 @@ export class MerchantAuthController {
                         401
                     )
                 );
-                return;
             }
 
             if (existingUser?.email === email) {
@@ -123,7 +120,6 @@ export class MerchantAuthController {
                     400
                 )
             );
-            return;
         }
 
         try {
@@ -143,7 +139,6 @@ export class MerchantAuthController {
                         401
                     )
                 );
-                return;
             }
 
             const isPasswordValid = await bcrypt.compare(
@@ -161,7 +156,6 @@ export class MerchantAuthController {
                         401
                     )
                 );
-                return;
             }
 
             const payload: PayloadType = {
@@ -227,7 +221,6 @@ export class MerchantAuthController {
                     400
                 )
             );
-            return;
         }
         const existingAccessToken = await prisma.refreshToken.findFirst({
             where: {
@@ -245,7 +238,6 @@ export class MerchantAuthController {
                     401
                 )
             );
-            return;
         }
 
         const payload = verifyRefreshToken(token);
