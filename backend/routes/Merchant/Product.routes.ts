@@ -29,4 +29,11 @@ router.delete(
     productController.deleteProduct
 );
 
+router.get(
+    '/all',
+    merchantAuth,
+    authorizedMerchants,
+    productController.getAllMerchantProducts
+);
+
 export default router;

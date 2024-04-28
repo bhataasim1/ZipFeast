@@ -4,6 +4,47 @@ import { prisma } from '../../prisma/Schema';
 import { InputValidator } from '../../utils/InputValidator';
 
 export class ProductController {
+    public async getAllMerchantProducts(req: Request, res: Response) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            const merchantId = req.user?.id;
+
+            const products = await prisma.product.findMany({
+                where: {
+                    merchantId: merchantId,
+                },
+            });
+
+            if (products.length === 0) {
+                return res.send(
+                    new ApiResponse(
+                        {
+                            status: 'error',
+                            message: 'No products found',
+                        },
+                        404
+                    )
+                );
+            }
+
+            return res.send(
+                new ApiResponse({
+                    status: 'success',
+                    message: 'Products found',
+                    data: products,
+                })
+            );
+        } catch (error) {
+            return res.send(
+                new ApiResponse({
+                    status: 'error',
+                    message: 'Error while fetching products',
+                })
+            );
+        }
+    }
+
     public async createProduct(req: Request, res: Response) {
         const { name, description, price, stock, category, isAvailable } =
             req.body;

@@ -6,6 +6,7 @@ import merchantRoutes from './routes/Merchant/Merchant.routes';
 import indexRoutes from './routes/index.routes';
 import productRoutes from './routes/Merchant/Product.routes';
 import userOrderRoutes from './routes/order/order.routes';
+import merchantOrderRoutes from './routes/order/MerchantOrder.routes'
 
 const env = new BaseEnvironment();
 
@@ -21,6 +22,7 @@ app.use(`${apiVersion}/user`, UserRoutes);
 app.use(`${apiVersion}/user/order`, userOrderRoutes);
 app.use(`${apiVersion}/merchant`, merchantRoutes);
 app.use(`${apiVersion}/merchant/product`, productRoutes);
+app.use(`${apiVersion}/merchant/order`, merchantOrderRoutes);
 
 app.get('/health-check', (req, res) => {
     return res.send('I am alive!');
