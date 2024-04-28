@@ -13,19 +13,19 @@ router.post('/logout', userAuthController.logOutUser);
 router.post('/token', userAuthController.refreshToken);
 
 router.get(
-    '/profile/:id',
+    '/profile',
     userAuth,
     authorizedUser,
     userProfileController.getUserProfile
 );
 router.post(
-    '/profile/update/:id',
+    '/profile/update',
     userAuth,
     authorizedUser,
     userProfileController.updateUser
 );
 router.post(
-    '/profile/upload/avatar/:id',
+    '/profile/upload/avatar',
     userAuth,
     authorizedUser,
     upload('avatar'),

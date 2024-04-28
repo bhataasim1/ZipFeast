@@ -14,13 +14,13 @@ router.post('/register', merchantAuthController.registerMerchant);
 router.post('/login', merchantAuthController.loginMerchant);
 router.post('/token', merchantAuthController.refreshToken);
 router.post(
-    '/profile/update/:id',
+    '/profile/update',
     merchantAuth,
     authorizedUser,
     merchantProfileCotroller.updateMerchant
 );
 router.post(
-    '/profile/upload/avatar/:id',
+    '/profile/upload/avatar',
     merchantAuth,
     authorizedUser,
     upload('avatar'),
