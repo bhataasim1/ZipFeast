@@ -188,4 +188,12 @@ export class OrderServices {
         }
         return order;
     }
+
+    protected async findOrderById(orderId: number) {
+        const order = await prisma.order.findUnique({
+            where: { id: orderId },
+        });
+
+        return order;
+    }
 }
