@@ -45,7 +45,7 @@ CREATE TABLE `Product` (
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `price` VARCHAR(191) NOT NULL,
-    `stock` INTEGER NULL DEFAULT 0,
+    `stock` VARCHAR(191) NULL DEFAULT '0',
     `category` VARCHAR(191) NOT NULL,
     `productImage` VARCHAR(191) NOT NULL,
     `merchantId` INTEGER NOT NULL,
