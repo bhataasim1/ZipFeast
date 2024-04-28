@@ -57,7 +57,7 @@ export class UserOrderController {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const userId = req.user?.id;
-            const orderId = req.params.id;
+            const orderId = req.params.orderId;
             const userOrder = await prisma.order.findFirst({
                 where: {
                     id: Number(orderId),

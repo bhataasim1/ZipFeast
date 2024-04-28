@@ -12,7 +12,8 @@ export class MerchantProfileController {
     public async updateMerchant(req: Request, res: Response) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        const merchantId = req.user?.id
+        const merchantId = req.user?.id;
+        console.log('Merchant ID:', merchantId);
         const {
             storeName,
             name,
@@ -56,30 +57,38 @@ export class MerchantProfileController {
                 .validatePincode();
 
             await validator.validate(req, res, async () => {
-                //TODO: Implement the Type Checking here
-                const merchant = {
-                    storeName,
-                    name,
-                    email,
-                    phone,
-                    address,
-                    city,
-                    pincode,
-                    state,
-                };
-
-                const m = await prisma.merchant.update({
+                const merchant = await prisma.merchant.update({
                     where: {
                         id: Number(merchantId),
                     },
-                    data: merchant,
+                    data: {
+                        storeName,
+                        name,
+                        email,
+                        phone,
+                        address,
+                        city,
+                        pincode,
+                        state,
+                    },
+                    select: {
+                        id: true,
+                        storeName: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        address: true,
+                        city: true,
+                        pincode: true,
+                        state: true,
+                    },
                 });
                 return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
                             message: 'Merchant updated successfully',
-                            m,
+                            merchant: merchant,
                         },
                         200
                     )
@@ -102,7 +111,7 @@ export class MerchantProfileController {
     public async uploadMerchantAvatar(req: Request, res: Response) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        const merchantId = req.user?.id
+        const merchantId = req.user?.id;
 
         try {
             const merchant = await prisma.merchant.findUnique({
@@ -142,6 +151,18 @@ export class MerchantProfileController {
                 },
                 data: {
                     avatar: newAvatar,
+                },
+                select: {
+                    id: true,
+                    storeName: true,
+                    name: true,
+                    email: true,
+                    avatar: true,
+                    phone: true,
+                    address: true,
+                    city: true,
+                    pincode: true,
+                    state: true,
                 },
             });
 

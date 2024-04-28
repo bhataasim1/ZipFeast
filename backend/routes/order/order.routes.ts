@@ -14,7 +14,7 @@ router.get(
 );
 
 router.get(
-    '/:id',
+    '/:orderId',
     userAuth,
     authorizedUser,
     userOrderController.getUserOrderById

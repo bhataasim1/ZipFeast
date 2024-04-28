@@ -10,7 +10,10 @@ const env = new BaseEnvironment();
 
 export class UserProfileController {
     public async getUserProfile(req: Request, res: Response) {
-        const userId = req.params.id;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const userId = req.user?.id;
+        console.log('User ID:', userId);
         try {
             const user = await prisma.user.findUnique({
                 where: {
@@ -31,7 +34,6 @@ export class UserProfileController {
                         404
                     )
                 );
-                return;
             }
 
             //eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,7 +63,10 @@ export class UserProfileController {
     }
 
     public async updateUser(req: Request, res: Response) {
-        const { id } = req.params;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const userId = req.user?.id;
+        console.log('User ID:', userId);
         const {
             name,
             email,
@@ -75,7 +80,7 @@ export class UserProfileController {
         try {
             const existingUser = await prisma.user.findUnique({
                 where: {
-                    id: Number(id),
+                    id: Number(userId),
                 },
             });
 
@@ -117,20 +122,27 @@ export class UserProfileController {
 
                 const updatedUser = await prisma.user.update({
                     where: {
-                        id: Number(id),
+                        id: Number(userId),
                     },
                     data: user,
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        address: true,
+                        city: true,
+                        pincode: true,
+                        state: true,
+                    },
                 });
 
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { password, createdAt, updatedAt, role, ...rest } =
-                    updatedUser;
                 return res.send(
                     new ApiResponse(
                         {
                             status: 'success',
                             message: 'User updated successfully',
-                            rest,
+                            updatedUser,
                         },
                         200
                     )
@@ -151,12 +163,15 @@ export class UserProfileController {
     }
 
     public async uploadUserAvatar(req: Request, res: Response) {
-        const { id } = req.params;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const userId = req.user?.id;
+        console.log('User ID:', userId);
 
         try {
             const user = await prisma.user.findUnique({
                 where: {
-                    id: Number(id),
+                    id: Number(userId),
                 },
             });
 
@@ -192,10 +207,21 @@ export class UserProfileController {
 
             const updatedUser = await prisma.user.update({
                 where: {
-                    id: Number(id),
+                    id: Number(userId),
                 },
                 data: {
                     avatar: newAvatar,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true,
+                    avatar: true,
+                    address: true,
+                    city: true,
+                    pincode: true,
+                    state: true,
                 },
             });
 
