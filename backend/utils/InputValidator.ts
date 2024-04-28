@@ -206,6 +206,68 @@ export class InputValidator {
         return this;
     }
 
+    validateDeliveryAddress() {
+        this.validators.push(
+            body('deliveryAddress')
+                .optional()
+                .isString()
+                .escape()
+                .notEmpty()
+                .withMessage('Delivery address is required')
+                .isLength({ min: 5 })
+                .withMessage('Delivery address should be at least 5 characters')
+        );
+        return this;
+    }
+
+    validatePaymentMethod() {
+        this.validators.push(
+            body('paymentMethod')
+                .optional()
+                .isString()
+                .escape()
+                .notEmpty()
+                .withMessage('Payment method is required')
+                .isLength({ min: 3 })
+                .withMessage('Payment method should be at least 3 characters')
+        );
+        return this;
+    }
+
+    validateQuantity() {
+        this.validators.push(
+            body('quantity')
+                .optional()
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Quantity is required')
+        );
+        return this;
+    }
+
+    validateMerchantId() {
+        this.validators.push(
+            body('merchantId')
+                .isNumeric()
+                .notEmpty()
+                .withMessage('Merchant id is required')
+        );
+        return this;
+    }
+
+    public validateCreateOrder() {
+        this.validateQuantity()
+            .validateDeliveryAddress()
+            .validatePaymentMethod()
+            .validateMerchantId();
+        return this;
+    }
+
+    public validateOrderUpdate() {
+        this.validateDeliveryAddress().validatePaymentMethod();
+        return this;
+    }
+
     public validateProduct() {
         this.validateName()
             .validateDescription()
