@@ -32,7 +32,7 @@ router.delete(
 router.get(
     '/all',
     merchantAuth,
-    authorizedMerchants,
+    authorizedUser,
     productController.getAllMerchantProducts
 );
 

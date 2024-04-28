@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { authorizedMerchants, userAuth } from '../../middleware';
+import { authorizedUser, userAuth } from '../../middleware';
 import { MerchantOrderController } from '../../controller';
 
 const merchantOrderController = new MerchantOrderController();
@@ -9,14 +9,14 @@ const router: Router = express.Router();
 router.get(
     '/all',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     merchantOrderController.getMerchantOrders
 );
 
 router.put(
     '/update/:orderId',
     userAuth,
-    authorizedMerchants,
+    authorizedUser,
     merchantOrderController.updateOrderStatus
 );
 
