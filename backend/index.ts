@@ -7,6 +7,7 @@ import indexRoutes from './routes/index.routes';
 import productRoutes from './routes/Merchant/Product.routes';
 import userOrderRoutes from './routes/order/order.routes';
 import merchantOrderRoutes from './routes/order/MerchantOrder.routes'
+import { sendApiResponseMiddleware } from './middleware';
 
 const env = new BaseEnvironment();
 
@@ -16,6 +17,7 @@ const apiVersion = '/api/v1';
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(sendApiResponseMiddleware);
 
 app.use(`${apiVersion}/`, indexRoutes);
 app.use(`${apiVersion}/user`, UserRoutes);
