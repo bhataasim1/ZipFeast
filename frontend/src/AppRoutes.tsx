@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/RootLayout";
 import Homepage from "./components/pages/Homepage";
-import { SIGN_IN } from "./constant/endpoins";
+import { SIGN_IN, SIGN_UP } from "./constant/endpoins";
+import SignupPage from "./components/pages/Signup-Page";
+import SigninPage from "./components/pages/Signin-Page";
 
 const AppRoutes = () => {
   return (
@@ -19,7 +21,16 @@ const AppRoutes = () => {
         path={SIGN_IN}
         element={
           <Layout>
-            <div>Sign In Page</div>
+            <SigninPage />
+          </Layout>
+        }
+      />
+
+      <Route
+        path={SIGN_UP}
+        element={
+          <Layout>
+            <SignupPage />
           </Layout>
         }
       />
