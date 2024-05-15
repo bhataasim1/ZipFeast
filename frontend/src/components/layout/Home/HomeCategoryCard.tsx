@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const HomeCategoryCard = () => {
   const handleCart = (item: number) => {
-    console.log("Added to cart", item);
+    toast.success(`Item ${item} added to cart`);
   };
   return (
     <>
