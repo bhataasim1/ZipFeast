@@ -1,8 +1,15 @@
 import React from 'react'
+// import { BannerAd } from '../layout/Home/HomeBannerAd'
+import HomeCarousel from '../layout/Home/HomeCarousel'
+import HomeCategoryCard from '../layout/Home/HomeCategoryCard'
 
-const Homepage = () => {
+const Homepage: React.FC = () => {
   return (
-    <div>Homepage</div>
+    <div>
+      {/* <BannerAd /> */}
+      <HomeCarousel />
+      <HomeCategoryCard />
+    </div>
   )
 }
 
