@@ -4,6 +4,7 @@ import Homepage from "./components/pages/Homepage";
 import { SIGN_IN, SIGN_UP } from "./constant/endpoins";
 import SignupPage from "./components/pages/Signup-Page";
 import SigninPage from "./components/pages/Signin-Page";
+import { Header } from "./components/layout/Header";
 
 const AppRoutes = () => {
   return (
@@ -11,9 +12,10 @@ const AppRoutes = () => {
       <Route
         path="/*"
         element={
-          <Layout>
+          <>
+            <Header />
             <Homepage />
-          </Layout>
+          </>
         }
       />
 
