@@ -9,11 +9,12 @@ import MobileSidebar from "./sidebar/MobileSidebar";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../themes/ModeToggle";
 import FormSearchBox from "../common/FormSearchBox";
-import Cart from "./cart/Cart";
+import { useShoppingCart } from "@/context/ShoppingCartContext";
+import { LucideShoppingCart } from "lucide-react";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { openCart, cartQuantity } = useShoppingCart();
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
@@ -33,7 +34,19 @@ export const Header = () => {
           {/* mobile */}
           <span className="flex md:hidden space-x-1">
             <ModeToggle />
-            <Cart isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+            <Button
+              variant="outline"
+              size={"icon"}
+              onClick={openCart}
+              className="relative"
+            >
+              <LucideShoppingCart size={25} />
+              {cartQuantity > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-700 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
+                  {cartQuantity}
+                </span>
+              )}
+            </Button>
             <MobileSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
           </span>
 
@@ -48,7 +61,19 @@ export const Header = () => {
             <Link to={"/signup"}>
               <Button variant="destructive">Sign Up</Button>
             </Link>
-            <Cart isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+            <Button
+              variant="outline"
+              size={"icon"}
+              onClick={openCart}
+              className="relative"
+            >
+              <LucideShoppingCart size={30} />
+              {cartQuantity > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-700 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
+                  {cartQuantity}
+                </span>
+              )}
+            </Button>
           </div>
         </NavigationMenuList>
       </NavigationMenu>
