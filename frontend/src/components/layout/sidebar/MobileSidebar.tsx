@@ -25,8 +25,8 @@ export default function MobileSidebar({
   return (
     <ScrollArea className="h-full">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger className="px-2">
-          <MenuIcon size={"36px"} />
+        <SheetTrigger asChild className="px-2">
+          <MenuIcon size={"40px"} />
         </SheetTrigger>
         <SheetContent side={"left"} className="!px-0">
           <SheetHeader className="flex justify-center items-center">
