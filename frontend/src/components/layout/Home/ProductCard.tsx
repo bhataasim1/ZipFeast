@@ -10,9 +10,10 @@ type ProductCardProps = {
   name: string;
   price: number;
   image: string;
+  weight: string;
 };
 
-const ProductCard = ({ id, name, price, image }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, weight }: ProductCardProps) => {
   const { getItemQuantity, increaseCartQuantity, decreaseCartQuantity } =
     useShoppingCart();
   const quantity = getItemQuantity(id);
@@ -33,7 +34,10 @@ const ProductCard = ({ id, name, price, image }: ProductCardProps) => {
               </div>
             </div>
             <div>
-              <h5 className="text-sm py-2 font-medium">{name}</h5>
+              <h5 className="text-sm py-2 font-medium truncate w-full overflow-ellipsis ">
+                {name}
+              </h5>
+              <span className="text-sm font-light">{weight}</span>
             </div>
             <h3 className="text-sm font-bold py-3">{formatCurrency(price)}</h3>
           </Link>
