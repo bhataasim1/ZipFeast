@@ -40,9 +40,9 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
   }, 0);
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full overflow-y-auto">
       <Sheet open={isCartOpen} onOpenChange={closeCart}>
-        <SheetContent side={"right"} className="!px-0">
+        <SheetContent side={"right"} className="!px-0 overflow-y-auto">
           <SheetHeader className="flex justify-center items-center">
             <SheetTitle>
               <Link to={BASE_ENDPOINT}>
