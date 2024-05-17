@@ -13,13 +13,20 @@ import { FormCombinedInput } from "@/components/common/FormCombinedInput";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { userRegistrationValidationSchema } from "../zodValidation";
+import { CrudServices } from "@/API/CrudServices";
+import { toast } from "sonner";
+import { SIGN_IN } from "@/constant/endpoins";
+import { useNavigate } from "react-router-dom";
 
 type UserFormValue = z.infer<typeof userRegistrationValidationSchema>;
 
 export default function UserSignUpForm() {
   const [loading, setLoading] = useState(false);
 
-const defaultValues: UserFormValue = {
+  const crudService = new CrudServices();
+  const navigate = useNavigate();
+
+  const defaultValues: UserFormValue = {
     name: "Aasim Ashraf",
     email: "aasim@zipfeast.com",
     role: "USER",
@@ -34,7 +41,17 @@ const defaultValues: UserFormValue = {
 
   const onSubmit = async (values: UserFormValue) => {
     setLoading(true);
-    console.log(values);
+    try {
+      const response = await crudService.registerUser(values);
+      if (response.error) {
+        toast.error(response.error);
+      } else {
+        toast.success("User registered successfully");
+        navigate(SIGN_IN);
+      }
+    } catch (error) {
+      console.error(error);
+    }
     setLoading(false);
   };
 

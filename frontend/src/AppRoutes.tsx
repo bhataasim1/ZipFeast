@@ -6,6 +6,7 @@ import SignupPage from "./components/pages/Signup-Page";
 import SigninPage from "./components/pages/Signin-Page";
 import { Header } from "./components/layout/Header";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
+import { SingleProduct } from "./components/layout/Home/product/SingleProduct";
 
 const AppRoutes = () => {
   return (
@@ -35,6 +36,15 @@ const AppRoutes = () => {
           element={
             <Layout>
               <SignupPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/product/:id"
+          element={
+            <Layout>
+              <SingleProduct />
             </Layout>
           }
         />
