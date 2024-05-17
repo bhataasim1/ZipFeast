@@ -13,6 +13,10 @@ import { userSigninValidationSchema } from "../zodValidation";
 import { FormCombinedInput } from "@/components/common/FormCombinedInput";
 import { Button } from "@/components/ui/button";
 import * as z from "zod";
+import { CrudServices } from "@/API/CrudServices";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { BASE_ENDPOINT } from "@/constant/endpoins";
 
 type UserFormValue = z.infer<typeof userSigninValidationSchema>;
 
@@ -24,6 +28,9 @@ const defaultValues: UserFormValue = {
 export default function UserLoginForm() {
   const [loading, setLoading] = useState(false);
 
+  const crudService = new CrudServices();
+  const navigate = useNavigate();
+
   const form = useForm<UserFormValue>({
     resolver: zodResolver(userSigninValidationSchema),
     defaultValues,
@@ -31,7 +38,21 @@ export default function UserLoginForm() {
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true);
-    console.log(data);
+
+    try {
+      const response = await crudService.loginUser(data);
+      if (response.error) {
+        toast.error(response.error);
+        console.error(response.error);
+      } else {
+        toast.success("User logged in successfully");
+        console.log(response.data);
+        navigate(BASE_ENDPOINT);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     setLoading(false);
   };
 

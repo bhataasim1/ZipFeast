@@ -57,7 +57,7 @@ export class UserAuthController {
                             status: 'error',
                             message: 'User already exists',
                         },
-                        401
+                        400
                     )
                 );
             }
