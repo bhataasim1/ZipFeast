@@ -17,6 +17,7 @@ import { CrudServices } from "@/API/CrudServices";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { BASE_ENDPOINT } from "@/constant/endpoins";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
 
 type UserFormValue = z.infer<typeof userSigninValidationSchema>;
 
@@ -30,6 +31,7 @@ export default function UserLoginForm() {
 
   const crudService = new CrudServices();
   const navigate = useNavigate();
+  const signIn = useSignIn();
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(userSigninValidationSchema),
@@ -45,9 +47,20 @@ export default function UserLoginForm() {
         toast.error(response.error);
         console.error(response.error);
       } else {
-        toast.success("User logged in successfully");
-        console.log(response.data);
-        navigate(BASE_ENDPOINT);
+        if (response.data) {
+          signIn({
+            auth: {
+              token: response.data.accessToken,
+              type: "Bearer",
+            },
+            userState: {
+              id: response.data.user.id,
+              name: response.data.user.name,
+              email: response.data.user.email,
+            },
+          }),
+            navigate(BASE_ENDPOINT);
+        }
       }
     } catch (error) {
       console.error(error);

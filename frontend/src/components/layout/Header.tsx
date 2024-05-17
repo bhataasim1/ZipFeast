@@ -11,10 +11,14 @@ import { ModeToggle } from "../themes/ModeToggle";
 import FormSearchBox from "../common/FormSearchBox";
 import { useShoppingCart } from "@/context/ShoppingCartContext";
 import { LucideShoppingCart } from "lucide-react";
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import { UserNav } from "./User-Nav";
+import { SIGN_IN, SIGN_UP } from "@/constant/endpoins";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { openCart, cartQuantity } = useShoppingCart();
+  const isAuthenticated = useIsAuthenticated();
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
@@ -55,12 +59,18 @@ export const Header = () => {
 
           <div className="hidden md:flex gap-2">
             <ModeToggle />
-            <Link to={"/signin"}>
-              <Button variant="outline">Sign In</Button>
-            </Link>
-            <Link to={"/signup"}>
-              <Button variant="destructive">Sign Up</Button>
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link to={SIGN_IN}>
+                  <Button variant="outline">Sign In</Button>
+                </Link>
+                <Link to={SIGN_UP}>
+                  <Button variant="destructive">Sign Up</Button>
+                </Link>
+              </>
+            ) : (
+              <UserNav />
+            )}
             <Button
               variant="outline"
               size={"icon"}

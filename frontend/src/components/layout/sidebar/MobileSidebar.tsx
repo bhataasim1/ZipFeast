@@ -11,7 +11,9 @@ import { Link } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { BASE_ENDPOINT, SIGN_IN, SIGN_UP } from "@/constant/endpoins";
 import { Nav } from "../Nav";
-import { navItems } from "@/constant/navItems";
+import { dashboardNavItems, navItems } from "@/constant/navItems";
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 
 export type MobileSidebarProps = {
   isOpen: boolean;
@@ -22,6 +24,13 @@ export default function MobileSidebar({
   isOpen,
   setIsOpen,
 }: MobileSidebarProps) {
+  const isAuthenticated = useIsAuthenticated();
+  const signOut = useSignOut();
+
+  const handleLogOut = async () => {
+    // await crudServices.logoutUser();
+    signOut();
+  };
   return (
     <ScrollArea className="h-full">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -43,18 +52,33 @@ export default function MobileSidebar({
                 Navigation
               </h2> */}
               <div className="space-y-1">
-                <Nav items={navItems} setOpen={setIsOpen} mobile />
                 <div className="flex flex-col gap-2 justify-center md:flex-row md:justify-between">
-                  <Link to={SIGN_IN}>
-                    <Button variant="outline" className="w-full">
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link to={SIGN_UP}>
-                    <Button variant="destructive" className="w-full">
-                      Sign Up
-                    </Button>
-                  </Link>
+                  {!isAuthenticated ? (
+                    <>
+                      <Nav items={navItems} setOpen={setIsOpen} mobile />
+                      <Link to={SIGN_IN}>
+                        <Button variant="outline" className="w-full">
+                          Sign In
+                        </Button>
+                      </Link>
+                      <Link to={SIGN_UP}>
+                        <Button variant="destructive" className="w-full">
+                          Sign Up
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Nav items={dashboardNavItems} setOpen={setIsOpen} mobile />
+                      <Button
+                        onClick={handleLogOut}
+                        variant="destructive"
+                        className="w-full"
+                      >
+                        LogOut
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
