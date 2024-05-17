@@ -57,6 +57,7 @@ export default function UserLoginForm() {
               id: response.data.user.id,
               name: response.data.user.name,
               email: response.data.user.email,
+              avatar: response.data.user.avatar,
             },
           }),
             navigate(BASE_ENDPOINT);
