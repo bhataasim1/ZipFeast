@@ -7,49 +7,60 @@ import SigninPage from "./components/pages/Signin-Page";
 import { Header } from "./components/layout/Header";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import { SingleProduct } from "./components/layout/Home/product/SingleProduct";
+import createStore from "react-auth-kit/createStore";
+import AuthProvider from "react-auth-kit/AuthProvider";
+
+const store = createStore({
+  authName: "token",
+  authType: "cookie",
+  cookieDomain: window.location.hostname,
+  cookieSecure: window.location.protocol === "https:",
+});
 
 const AppRoutes = () => {
   return (
-    <ShoppingCartProvider>
-      <Routes>
-        <Route
-          path="/*"
-          element={
-            <>
-              <Header />
-              <Homepage />
-            </>
-          }
-        />
+    <AuthProvider store={store}>
+      <ShoppingCartProvider>
+        <Routes>
+          <Route
+            path="/*"
+            element={
+              <>
+                <Header />
+                <Homepage />
+              </>
+            }
+          />
 
-        <Route
-          path={SIGN_IN}
-          element={
-            <Layout>
-              <SigninPage />
-            </Layout>
-          }
-        />
+          <Route
+            path={SIGN_IN}
+            element={
+              <Layout>
+                <SigninPage />
+              </Layout>
+            }
+          />
 
-        <Route
-          path={SIGN_UP}
-          element={
-            <Layout>
-              <SignupPage />
-            </Layout>
-          }
-        />
+          <Route
+            path={SIGN_UP}
+            element={
+              <Layout>
+                <SignupPage />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/product/:id"
-          element={
-            <Layout>
-              <SingleProduct />
-            </Layout>
-          }
-        />
-      </Routes>
-    </ShoppingCartProvider>
+          <Route
+            path="/product/:id"
+            element={
+              <Layout>
+                <SingleProduct />
+              </Layout>
+            }
+          />
+        </Routes>
+      </ShoppingCartProvider>
+    </AuthProvider>
   );
 };
 

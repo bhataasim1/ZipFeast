@@ -52,16 +52,24 @@ export class CrudServices {
   async loginUser(data: {
     email: string;
     password: string;
-  }): Promise<ApiResponse<{ token: string }>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): Promise<ApiResponse<any>> {
     const options: RequestInit = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     };
 
-    return this.fetchJson<{ token: string }>(
-      `${this.backendUrl}/login`,
-      options
-    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.fetchJson<any>(`${this.backendUrl}/login`, options);
+  }
+
+  async logoutUser(): Promise<ApiResponse<null>> {
+    const options: RequestInit = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+
+    return this.fetchJson<null>(`${this.backendUrl}/logout`, options);
   }
 }
