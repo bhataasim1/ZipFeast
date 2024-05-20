@@ -18,6 +18,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { BASE_ENDPOINT } from "@/constant/endpoins";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { authUserType } from "@/types/types";
 
 type UserFormValue = z.infer<typeof userSigninValidationSchema>;
 
@@ -32,6 +34,7 @@ export default function UserLoginForm() {
   const crudService = new CrudServices();
   const navigate = useNavigate();
   const signIn = useSignIn();
+  const authUser: authUserType | null = useAuthUser();
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(userSigninValidationSchema),
@@ -69,6 +72,10 @@ export default function UserLoginForm() {
 
     setLoading(false);
   };
+
+  if (authUser) {
+    navigate(BASE_ENDPOINT);
+  }
 
   return (
     <>

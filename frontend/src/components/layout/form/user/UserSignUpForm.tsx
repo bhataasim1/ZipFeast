@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 import { userRegistrationValidationSchema } from "../zodValidation";
 import { CrudServices } from "@/API/CrudServices";
 import { toast } from "sonner";
-import { SIGN_IN } from "@/constant/endpoins";
+import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
 import { useNavigate } from "react-router-dom";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { authUserType } from "../../User-Nav";
 
 type UserFormValue = z.infer<typeof userRegistrationValidationSchema>;
 
@@ -25,6 +27,7 @@ export default function UserSignUpForm() {
 
   const crudService = new CrudServices();
   const navigate = useNavigate();
+  const authUser: authUserType | null = useAuthUser();
 
   const defaultValues: UserFormValue = {
     name: "Aasim Ashraf",
@@ -54,6 +57,10 @@ export default function UserSignUpForm() {
     }
     setLoading(false);
   };
+
+  if (authUser) {
+    navigate(BASE_ENDPOINT);
+  }
 
   return (
     <>

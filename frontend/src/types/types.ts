@@ -33,5 +33,9 @@ export type ModelFormInputType =
   | "password"
   | "number";
 
-
-  
+export type authUserType = {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+};

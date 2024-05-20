@@ -14,6 +14,7 @@ const HomeCarousel = () => {
       <Carousel
         opts={{
           align: "start",
+          loop: true,
         }}
         className="w-full max-w-full justify-center flex items-center"
       >
