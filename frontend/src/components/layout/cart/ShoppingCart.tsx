@@ -6,13 +6,15 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link, useSearchParams } from "react-router-dom";
-import { BASE_ENDPOINT } from "@/constant/endpoins";
+import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
 import { useEffect } from "react";
 import { useShoppingCart } from "@/context/ShoppingCartContext";
 import CartItem from "./CartItem";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { Products } from "../Home/products";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { authUserType } from "@/types/types";
 
 export type ShoppingCartProps = {
   isCartOpen: boolean;
@@ -21,6 +23,8 @@ export type ShoppingCartProps = {
 export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { closeCart, cartItems } = useShoppingCart();
+
+  const authUser: authUserType | null = useAuthUser();
 
   useEffect(() => {
     if (isCartOpen) {
@@ -51,31 +55,56 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
               </Link>
             </SheetTitle>
           </SheetHeader>
-          <div className="space-y-4 py-4">
-            {cartItems.length === 0 ? (
-              <div className="flex justify-center items-center h-64">
-                <h3 className="text-lg font-bold">Cart is empty</h3>
-              </div>
-            ) : (
-              <>
-                {cartItems.map((item) => (
-                  <CartItem key={item.id} {...item} />
-                ))}
-                <div className="flex justify-end items-end p-4">
-                  <h3 className="text-sm font-bold">
-                    Total: {formatCurrency(totalPrice)}
-                  </h3>
-                </div>
+          {!authUser ? (
+            <div className="flex flex-col items-center justify-center space-y-4 p-4">
+              <p className="text-center text-sm text-muted-foreground">
+                You need to be logged in to view your cart
+              </p>
+              <Link to={SIGN_IN}>
                 <Button
-                  variant="destructive"
+                  variant={"destructive"}
                   className="w-full"
-                  // onClick={handleCheckout}
+                  onClick={closeCart}
                 >
-                  Checkout
+                  Sign in
                 </Button>
-              </>
-            )}
-          </div>
+              </Link>
+            </div>
+          ) : (
+            <>
+              {cartItems.length === 0 ? (
+                <div className="flex flex-col items-center justify-center space-y-4 p-4 mt-[50%]">
+                  <p className="text-center text-sm text-muted-foreground">
+                    Your cart is empty
+                  </p>
+                  <Link to={BASE_ENDPOINT}>
+                    <Button
+                      variant={"destructive"}
+                      className="w-full"
+                      onClick={closeCart}
+                    >
+                      Continue shopping
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-4 p-4">
+                  {cartItems.map((cartItem) => (
+                    <CartItem key={cartItem.id} {...cartItem} />
+                  ))}
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-medium">Total</p>
+                    <p className="text-sm font-bold">
+                      {formatCurrency(totalPrice)}
+                    </p>
+                  </div>
+                  <div className="flex justify-center">
+                    <Button variant="destructive" className="w-full">Checkout</Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </SheetContent>
       </Sheet>
     </ScrollArea>

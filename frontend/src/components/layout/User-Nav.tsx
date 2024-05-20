@@ -15,13 +15,8 @@ import { USER_PROFILE } from "@/constant/endpoins";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { CrudServices } from "@/API/CrudServices";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { authUserType } from "@/types/types";
 
-type authUserType = {
-  id: number;
-  name: string;
-  email: string;
-  avatar: string;
-};
 
 export function UserNav() {
   const navigate = useNavigate();
