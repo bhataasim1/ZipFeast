@@ -11,26 +11,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { USER_PROFILE } from "@/constant/endpoins";
+import { BASE_ENDPOINT, USER_PROFILE } from "@/constant/endpoins";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
-import { CrudServices } from "@/API/CrudServices";
+// import { CrudServices } from "@/API/CrudServices";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { authUserType } from "@/types/types";
-
 
 export function UserNav() {
   const navigate = useNavigate();
   const signOut = useSignOut();
   const authUser: authUserType | null = useAuthUser();
-  const crudServices = new CrudServices();
+  // const crudServices = new CrudServices();
 
   const handleRoute = (url: string) => {
     navigate(url);
   };
 
   const handleLogOut = async () => {
-    await crudServices.logoutUser();
+    // await crudServices.logoutUser();
     signOut();
+    navigate(BASE_ENDPOINT);
   };
   return (
     <DropdownMenu>

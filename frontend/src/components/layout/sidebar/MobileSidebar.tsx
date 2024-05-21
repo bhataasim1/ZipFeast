@@ -7,13 +7,14 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { BASE_ENDPOINT, SIGN_IN, SIGN_UP } from "@/constant/endpoins";
 import { Nav } from "../Nav";
 import { dashboardNavItems, navItems } from "@/constant/navItems";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+// import { CrudServices } from "@/API/CrudServices";
 
 export type MobileSidebarProps = {
   isOpen: boolean;
@@ -26,10 +27,13 @@ export default function MobileSidebar({
 }: MobileSidebarProps) {
   const isAuthenticated = useIsAuthenticated();
   const signOut = useSignOut();
+  // const crudServices = new CrudServices();
+  const navigate = useNavigate();
 
   const handleLogOut = async () => {
     // await crudServices.logoutUser();
     signOut();
+    navigate(BASE_ENDPOINT);
   };
   return (
     <ScrollArea className="h-full">
@@ -69,7 +73,11 @@ export default function MobileSidebar({
                     </>
                   ) : (
                     <>
-                      <Nav items={dashboardNavItems} setOpen={setIsOpen} mobile />
+                      <Nav
+                        items={dashboardNavItems}
+                        setOpen={setIsOpen}
+                        mobile
+                      />
                       <Button
                         onClick={handleLogOut}
                         variant="destructive"
