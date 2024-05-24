@@ -2,6 +2,7 @@ import { NavItem } from "@/types/types";
 import {
   LucideBadgeInfo,
   LucideHome,
+  LucideListOrdered,
   LucideUser,
 } from "lucide-react";
 
@@ -26,5 +27,11 @@ export const dashboardNavItems: NavItem[] = [
     icon: LucideUser,
     href: "/user/profile",
     route: "/user/profile",
+  },
+  {
+    name: "Orders",
+    icon: LucideListOrdered,
+    href: "/user/orders",
+    route: "/user/orders",
   },
 ];

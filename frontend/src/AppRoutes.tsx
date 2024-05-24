@@ -9,6 +9,10 @@ import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import { SingleProduct } from "./components/layout/Home/product/SingleProduct";
 import createStore from "react-auth-kit/createStore";
 import AuthProvider from "react-auth-kit/AuthProvider";
+import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+import ProfilePage from "./components/pages/ProfilePage";
+import UserDashboard from "./components/layout/profile/UserDashboard";
+import UserOrders from "./components/layout/profile/UserOrders";
 
 const store = createStore({
   authName: "token",
@@ -58,6 +62,25 @@ const AppRoutes = () => {
               </Layout>
             }
           />
+
+          <Route element={<AuthOutlet fallbackPath={SIGN_IN} />}>
+            <Route
+              path="/user/profile"
+              element={
+                <Layout>
+                  <ProfilePage children={<UserDashboard />} />
+                </Layout>
+              }
+            />
+            <Route
+              path="/user/orders"
+              element={
+                <Layout>
+                  <ProfilePage children={<UserOrders />} />
+                </Layout>
+              }
+            />
+          </Route>
         </Routes>
       </ShoppingCartProvider>
     </AuthProvider>
