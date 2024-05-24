@@ -2,11 +2,9 @@ import { Request, Response } from 'express';
 import { prisma } from '../../prisma/Schema';
 import { ApiResponse } from '../../middleware';
 import { InputValidator } from '../../utils/InputValidator';
-import { BaseEnvironment } from '../../Environment';
-import fs from 'fs';
-import { UserProfileType } from '../../types/types';
+import { UploadFile, UserProfileType } from '../../types/types';
 
-const env = new BaseEnvironment();
+
 
 export class UserProfileController {
     public async getUserProfile(req: Request, res: Response) {
@@ -166,7 +164,6 @@ export class UserProfileController {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         const userId = req.user?.id;
-        console.log('User ID:', userId);
 
         try {
             const user = await prisma.user.findUnique({
@@ -187,7 +184,8 @@ export class UserProfileController {
                 );
             }
 
-            const newAvatar = req.file?.filename;
+            const newAvatar = req.file as UploadFile;
+            // console.log('New Avatar:', newAvatar);
             if (!newAvatar) {
                 return res.send(
                     new ApiResponse(
@@ -195,14 +193,9 @@ export class UserProfileController {
                             status: 'error',
                             message: 'Please Upload a valid image',
                         },
-                        401
+                        400
                     )
                 );
-            }
-
-            if (user.avatar) {
-                const existingAvatar = user.avatar;
-                fs.unlinkSync(`${env.UPLOAD_DIR}/avatar/${existingAvatar}`);
             }
 
             const updatedUser = await prisma.user.update({
@@ -210,7 +203,7 @@ export class UserProfileController {
                     id: Number(userId),
                 },
                 data: {
-                    avatar: newAvatar,
+                    avatar: newAvatar.location,
                 },
                 select: {
                     id: true,
