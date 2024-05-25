@@ -1,5 +1,7 @@
 import { authUserType } from "@/types/types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import ProfileUpdate from "./form/ProfileUpdate";
+import ProfileImageUploadCard from "./form/ProfileUploadImage";
 
 export default function UserDashboard() {
   const authUser: authUserType | null = useAuthUser();
@@ -15,7 +17,8 @@ export default function UserDashboard() {
             👋
           </h2>
         </div>
-        {/* Will add the user from where he will update his profile */}
+        <ProfileImageUploadCard />
+        <ProfileUpdate />
       </div>
     </>
   );

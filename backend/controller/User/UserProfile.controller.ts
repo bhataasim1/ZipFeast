@@ -185,7 +185,7 @@ export class UserProfileController {
             }
 
             const newAvatar = req.file as UploadFile;
-            // console.log('New Avatar:', newAvatar);
+            console.log('New Avatar:', newAvatar);
             if (!newAvatar) {
                 return res.send(
                     new ApiResponse(
