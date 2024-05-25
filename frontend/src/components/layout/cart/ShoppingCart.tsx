@@ -12,7 +12,6 @@ import { useShoppingCart } from "@/context/ShoppingCartContext";
 import CartItem from "./CartItem";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { Products } from "../Home/products";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { authUserType } from "@/types/types";
 
@@ -35,12 +34,8 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
     setSearchParams(searchParams);
   }, [isCartOpen, searchParams, setSearchParams]);
 
-  const totalPrice = cartItems.reduce((total, cartItem) => {
-    const item = Products.find((product) => product.id === cartItem.id);
-    if (item) {
-      total += item.price * cartItem.quantity;
-    }
-    return total;
+  const totalPrice = cartItems.reduce((total, item) => {
+    return total + Number(item.product.price) * item.quantity;
   }, 0);
 
   return (
@@ -99,7 +94,9 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
                     </p>
                   </div>
                   <div className="flex justify-center">
-                    <Button variant="destructive" className="w-full">Checkout</Button>
+                    <Button variant="destructive" className="w-full">
+                      Checkout
+                    </Button>
                   </div>
                 </div>
               )}

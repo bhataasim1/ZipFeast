@@ -12,6 +12,10 @@ export class BaseEnvironment {
         ACCESS_TOKEN_LIFE: '1h',
         REFRESH_TOKEN_SECRET: 'my-local-secret',
         UPLOAD_DIR: 'uploads',
+        MY_AWS_REGION: 'your-region',
+        MY_AWS_ACCESS_KEY: 'your-access-key',
+        MY_AWS_SECRET_KEY: 'your-secret-key',
+        MY_AWS_BUCKET_NAME: 'your-bucket-name',
     };
     get environment(): Environmnent {
         return process.env.NODE_ENV as Environmnent;
@@ -56,6 +60,34 @@ export class BaseEnvironment {
     get UPLOAD_DIR(): string {
         return (
             process.env.UPLOAD_DIR! || this.defaultEnvironmentValues.UPLOAD_DIR
+        );
+    }
+
+    get MY_AWS_REGION(): string {
+        return (
+            process.env.MY_AWS_REGION! ||
+            this.defaultEnvironmentValues.MY_AWS_REGION
+        );
+    }
+
+    get MY_AWS_ACCESS_KEY(): string {
+        return (
+            process.env.MY_AWS_ACCESS_KEY! ||
+            this.defaultEnvironmentValues.MY_AWS_ACCESS_KEY
+        );
+    }
+
+    get MY_AWS_SECRET_KEY(): string {
+        return (
+            process.env.MY_AWS_SECRET_KEY! ||
+            this.defaultEnvironmentValues.MY_AWS_SECRET_KEY
+        );
+    }
+
+    get MY_AWS_BUCKET_NAME(): string {
+        return (
+            process.env.MY_AWS_BUCKET_NAME! ||
+            this.defaultEnvironmentValues.MY_AWS_BUCKET_NAME
         );
     }
 }

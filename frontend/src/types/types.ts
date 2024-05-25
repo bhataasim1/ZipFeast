@@ -39,3 +39,26 @@ export type authUserType = {
   email: string;
   avatar: string;
 };
+
+
+export type MerchantType = {
+  storeName: string;
+  name: string;
+  address: string;
+  email: string;
+};
+
+export type ProductType = {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  stock: string;
+  category: string;
+  productImage: string;
+  merchantId: number;
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+  merchant: MerchantType;
+};

@@ -71,6 +71,8 @@ export class IndexController {
                         select: {
                             storeName: true,
                             name: true,
+                            address: true,
+                            email: true,
                         },
                     },
                 },
@@ -91,5 +93,40 @@ export class IndexController {
                 })
             );
         }
+    }
+
+    public async getProductById(req: Request, res: Response) {
+        const { productId } = req.params;
+        const product = await prisma.product.findUnique({
+            where: {
+                id: Number(productId),
+            },
+            include: {
+                merchant: {
+                    select: {
+                        storeName: true,
+                        name: true,
+                        address: true,
+                        email: true,
+                    },
+                },
+            },
+        });
+
+        if (!product) {
+            return res.send(
+                new ApiResponse({
+                    status: 'error',
+                    message: 'Product not found',
+                })
+            );
+        }
+
+        return res.send(
+            new ApiResponse({
+                status: 'success',
+                data: product,
+            })
+        );
     }
 }

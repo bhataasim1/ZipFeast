@@ -46,13 +46,16 @@ export const allowdFileTypes = {
     files: ['application/pdf'],
 };
 
-
 export type OrderDataTypes = {
     userId: number;
     merchantId: number;
     productId: number | string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    quantity: any;   //Need to fix this one it could be number | string
+    quantity: any; //Need to fix this one it could be number | string
     deliveryAddress: string;
     paymentMethod: string;
 };
+
+export interface UploadFile extends Express.Multer.File {
+    location: string;
+}

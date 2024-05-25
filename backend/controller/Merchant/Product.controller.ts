@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ApiResponse } from '../../middleware';
 import { prisma } from '../../prisma/Schema';
 import { InputValidator } from '../../utils/InputValidator';
+import { UploadFile } from '../../types';
 
 export class ProductController {
     public async getAllMerchantProducts(req: Request, res: Response) {
@@ -67,7 +68,7 @@ export class ProductController {
             );
         }
         try {
-            const productImage = req.file?.filename;
+            const productImage = req.file as UploadFile;
             if (!productImage) {
                 return res.send(
                     new ApiResponse({
@@ -84,7 +85,7 @@ export class ProductController {
                 price,
                 category,
                 stock,
-                productImage,
+                productImage: productImage.location,
             };
 
             const validator = new InputValidator(req);

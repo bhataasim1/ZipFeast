@@ -1,24 +1,29 @@
 import multer from 'multer';
-import fs from 'fs';
+import multerS3 from 'multer-s3';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import { S3Client } from '@aws-sdk/client-s3';
 import { BaseEnvironment } from '../Environment';
-// import { allowdFileTypes } from '../types/types';
 import { Request, Response, NextFunction } from 'express';
 
 const env = new BaseEnvironment();
 
+const s3 = new S3Client({
+    region: env.MY_AWS_REGION!,
+    credentials: {
+        accessKeyId: env.MY_AWS_ACCESS_KEY!,
+        secretAccessKey: env.MY_AWS_SECRET_KEY!,
+    },
+});
+
 function createUploadMiddleware(type: string) {
-    const baseDir = `${env.UPLOAD_DIR}/${type}`;
-
-    if (!fs.existsSync(baseDir)) {
-        fs.mkdirSync(baseDir, { recursive: true });
-    }
-
-    const storage = multer.diskStorage({
-        destination: baseDir,
-        filename: (req, file, cb) => {
+    const storage = multerS3({
+        s3: s3,
+        bucket: env.MY_AWS_BUCKET_NAME!,
+        key: (req, file, cb) => {
             const filename =
                 `${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`.toLowerCase();
-            cb(null, filename);
+            cb(null, `${type}/${filename}`);
         },
     });
 
@@ -27,7 +32,6 @@ function createUploadMiddleware(type: string) {
         file: Express.Multer.File,
         cb: multer.FileFilterCallback
     ) => {
-        //allow only the images with png, jpg, jpeg format
         const allowedTypes: string[] = ['image/png', 'image/jpg', 'image/jpeg'];
         if (!allowedTypes.includes(file.mimetype)) {
             return cb(new Error('Invalid file type'));

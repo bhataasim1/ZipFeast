@@ -1,12 +1,8 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/Schema';
 import { ApiResponse } from '../../middleware';
-import { MerchantProfileType } from '../../types/types';
+import { MerchantProfileType, UploadFile } from '../../types/types';
 import { InputValidator } from '../../utils/InputValidator';
-import { BaseEnvironment } from '../../Environment';
-import fs from 'fs';
-
-const env = new BaseEnvironment();
 
 export class MerchantProfileController {
     public async updateMerchant(req: Request, res: Response) {
@@ -127,7 +123,7 @@ export class MerchantProfileController {
                 });
             }
 
-            const newAvatar = req.file?.filename;
+            const newAvatar = req.file as UploadFile;
             if (!newAvatar) {
                 return res.send(
                     new ApiResponse(
@@ -140,17 +136,12 @@ export class MerchantProfileController {
                 );
             }
 
-            if (merchant.avatar) {
-                const existingAvatar = merchant.avatar;
-                fs.unlinkSync(`${env.UPLOAD_DIR}/avatar/${existingAvatar}`);
-            }
-
             const updatedMerchant = await prisma.merchant.update({
                 where: {
                     id: Number(merchantId),
                 },
                 data: {
-                    avatar: newAvatar,
+                    avatar: newAvatar.location,
                 },
                 select: {
                     id: true,
