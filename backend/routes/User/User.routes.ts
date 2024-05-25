@@ -18,7 +18,7 @@ router.get(
     authorizedUser,
     userProfileController.getUserProfile
 );
-router.post(
+router.put(
     '/profile/update',
     userAuth,
     authorizedUser,

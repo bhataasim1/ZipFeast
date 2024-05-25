@@ -2,11 +2,15 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BACKEND_URL } from "@/constant/endpoins";
 import { userRegisterTypes } from "./types";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { userProfileUpdateSchema } from "@/components/layout/profile/form/zodValidation";
+import * as z from "zod";
 
 interface ApiResponse<T> {
   data?: T;
   error?: string;
 }
+
+type userProfileUpdateValues = z.infer<typeof userProfileUpdateSchema>;
 
 export class CrudServices {
   private backendUrl: string;
@@ -131,5 +135,20 @@ export class CrudServices {
       `${this.backendUrl}/order/delete/${orderId}`,
       options
     );
+  }
+
+  async updateUserProfile(
+    data: userProfileUpdateValues
+  ): Promise<ApiResponse<null>> {
+    const options: AxiosRequestConfig = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this?.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson<null>(`${this.backendUrl}/profile/update`, options);
   }
 }
