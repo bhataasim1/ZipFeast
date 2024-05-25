@@ -16,6 +16,13 @@ export class UserOrderController {
                 where: {
                     userId: userId,
                 },
+                include: {
+                    items: {
+                        include: {
+                            product: true,
+                        },
+                    },
+                },
             });
 
             if (userOrders.length === 0) {
@@ -62,6 +69,13 @@ export class UserOrderController {
                 where: {
                     id: Number(orderId),
                     userId: userId,
+                },
+                include: {
+                    items: {
+                        include: {
+                            product: true,
+                        },
+                    },
                 },
             });
 
@@ -206,6 +220,7 @@ export class UserOrderController {
                 )
             );
         } catch (error) {
+            console.log(error);
             return res.send(
                 new ApiResponse(
                     {

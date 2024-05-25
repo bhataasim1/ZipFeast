@@ -117,4 +117,19 @@ export class CrudServices {
 
     return this.fetchJson<null>(`${this.backendUrl}/order/${orderId}`, options);
   }
+
+  async cancelOrder(orderId: number): Promise<ApiResponse<null>> {
+    const options: AxiosRequestConfig = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this?.token,
+      },
+    };
+
+    return this.fetchJson<null>(
+      `${this.backendUrl}/order/delete/${orderId}`,
+      options
+    );
+  }
 }
