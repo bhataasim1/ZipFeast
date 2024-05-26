@@ -13,6 +13,7 @@ import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
 import ProfilePage from "./components/pages/ProfilePage";
 import UserDashboard from "./components/layout/profile/UserDashboard";
 import UserOrders from "./components/layout/profile/UserOrders";
+import CheckoutPage from "./components/pages/CheckoutPage";
 
 const store = createStore({
   authName: "token",
@@ -77,6 +78,15 @@ const AppRoutes = () => {
               element={
                 <Layout>
                   <ProfilePage children={<UserOrders />} />
+                </Layout>
+              }
+            />
+
+            <Route
+              path="/checkout"
+              element={
+                <Layout>
+                  <CheckoutPage />
                 </Layout>
               }
             />

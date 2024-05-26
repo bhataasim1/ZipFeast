@@ -5,7 +5,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
 import { useEffect } from "react";
 import { useShoppingCart } from "@/context/ShoppingCartContext";
@@ -22,6 +22,7 @@ export type ShoppingCartProps = {
 export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { closeCart, cartItems } = useShoppingCart();
+  const navigate = useNavigate();
 
   const authUser: authUserType | null = useAuthUser();
 
@@ -37,6 +38,11 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
   const totalPrice = cartItems.reduce((total, item) => {
     return total + Number(item.product.price) * item.quantity;
   }, 0);
+
+  const handleCheckout = () => {
+    navigate("/checkout");
+    closeCart();
+  }
 
   return (
     <ScrollArea className="h-full overflow-y-auto">
@@ -94,7 +100,7 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
                     </p>
                   </div>
                   <div className="flex justify-center">
-                    <Button variant="destructive" className="w-full">
+                    <Button variant="destructive" className="w-full" onClick={handleCheckout}>
                       Checkout
                     </Button>
                   </div>

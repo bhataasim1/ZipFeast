@@ -164,4 +164,17 @@ export class CrudServices {
 
     return this.fetchJson<null>(`${this.backendUrl}/profile/upload/avatar`, options);
   }
+
+  async placeOrder(data: { cart: [] }): Promise<ApiResponse<null>> {
+    const options: AxiosRequestConfig = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this?.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson<null>(`${this.backendUrl}/order/create`, options);
+  }
 }

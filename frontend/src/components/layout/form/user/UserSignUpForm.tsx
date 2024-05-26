@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
 import { useNavigate } from "react-router-dom";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-import { authUserType } from "../../User-Nav";
+import { authUserType } from "@/types/types"; 
 
 type UserFormValue = z.infer<typeof userRegistrationValidationSchema>;
 
