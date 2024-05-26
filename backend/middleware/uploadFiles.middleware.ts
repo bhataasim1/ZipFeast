@@ -1,7 +1,5 @@
 import multer from 'multer';
 import multerS3 from 'multer-s3';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
 import { S3Client } from '@aws-sdk/client-s3';
 import { BaseEnvironment } from '../Environment';
 import { Request, Response, NextFunction } from 'express';
