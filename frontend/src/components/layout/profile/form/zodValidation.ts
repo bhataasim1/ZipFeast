@@ -40,5 +40,5 @@ export const userProfileUpdateSchema = z.object({
 
 
 export const userUpdateImageValidationSchema = z.object({
-  avatar: z.string(z.instanceof(File)),
+  avatar: z.instanceof(File, { message: "Avatar is Required"}),
 });
