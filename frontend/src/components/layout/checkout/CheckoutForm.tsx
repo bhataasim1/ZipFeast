@@ -18,11 +18,9 @@ import { FormSelectInput } from "@/components/common/FormSelectInput";
 import { LucideShoppingBag } from "lucide-react";
 import { CartItemType } from "@/types/types";
 import { checkoutFormValidationSchema } from "../form/zodValidation";
-
+import { paymentMethodOptions } from "@/constant/paymentOptions";
 
 type UserFormValue = z.infer<typeof checkoutFormValidationSchema>;
-
-const paymentMethodOptions = [{ label: "Cash on Delivery", value: "COD" }];
 
 interface CheckoutFormProps {
   cartItems: CartItemType[];
