@@ -4,7 +4,7 @@ export class OrderServices {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public async createOrderService(orderData: any) {
         this.validateOrderData(orderData);
-
+    
         const {
             userId,
             productId,
@@ -13,31 +13,32 @@ export class OrderServices {
             deliveryAddress,
             paymentMethod,
         } = orderData;
-
-        ///TODO:: Implement the Type checking of data and remove the types in the function signature
-        /// remove the use of type like Number(userId) etc. in prisma queries
-
-        await this.findUser(userId);
-        const product = await this.findProduct(Number(productId), quantity);
-
-        const totalAmount = parseFloat(product.price) * parseInt(quantity);
-
-        const newOrder = await this.createOrder({
-            userId,
-            merchantId,
-            quantity,
-            totalAmount,
-            orderStatus: 'PENDING',
-            deliveryAddress,
-            paymentMethod,
-            productId: Number(productId),
-        });
-
-        const updatedStock = Number(product.stock!) - quantity;
-
-        await this.updateProductStock(Number(productId), updatedStock);
-
-        return newOrder;
+    
+        try {
+            await this.findUser(userId);
+            const product = await this.findProduct(productId, quantity);
+    
+            const totalAmount = Number(product.price) * quantity;
+    
+            const newOrder = await this.createOrder({
+                userId,
+                merchantId,
+                quantity,
+                totalAmount,
+                orderStatus: 'PENDING',
+                deliveryAddress,
+                paymentMethod,
+                productId,
+            });
+    
+            const updatedStock = Number(product.stock) - quantity;
+    
+            await this.updateProductStock(productId, updatedStock);
+    
+            return newOrder;
+        } catch (error) {
+            throw new Error('Error while creating order: ' + error);
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

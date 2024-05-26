@@ -21,7 +21,7 @@ router.get(
 );
 
 router.post(
-    '/create/:productId',
+    '/create',
     userAuth,
     authorizedUser,
     userOrderController.createOrder

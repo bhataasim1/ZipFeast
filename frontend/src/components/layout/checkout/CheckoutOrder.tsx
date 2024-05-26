@@ -15,9 +15,14 @@ const CheckoutOrder = () => {
     increaseCartQuantity,
     decreaseCartQuantity,
     removeFromCart,
+    clearCart,
   } = useShoppingCart();
 
-  console.log(cartItems);
+  //   console.log(cartItems);
+
+  const handleClearCart = () => {
+    clearCart();
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -108,7 +113,7 @@ const CheckoutOrder = () => {
             </div>
             <Separator className="my-4" />
             <h3 className="font-semibold mb-4">Shipping Address</h3>
-            <CheckoutForm />
+            <CheckoutForm cartItems={cartItems} clearCart={handleClearCart} />
           </Card>
         </div>
       </div>

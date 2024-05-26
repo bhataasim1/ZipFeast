@@ -256,10 +256,10 @@ export class InputValidator {
     }
 
     public validateCreateOrder() {
-        this.validateQuantity()
-            .validateDeliveryAddress()
+        // this.validateQuantity()
+           this.validateDeliveryAddress()
             .validatePaymentMethod()
-            .validateMerchantId();
+            // .validateMerchantId();
         return this;
     }
 

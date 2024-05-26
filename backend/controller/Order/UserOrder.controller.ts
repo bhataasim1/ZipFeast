@@ -115,65 +115,95 @@ export class UserOrderController {
 
     public async createOrder(req: Request, res: Response) {
         try {
-            const { quantity, deliveryAddress, paymentMethod, merchantId } =
-                req.body;
+            const { cart, deliveryAddress, paymentMethod } = req.body;
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const userId = req.user?.id;
-            const productId = req.params.productId;
 
-            if (
-                !quantity ||
-                !deliveryAddress ||
-                !paymentMethod ||
-                !merchantId
-            ) {
+            if (!cart || !deliveryAddress || !paymentMethod) {
                 return res.send(
                     new ApiResponse(
                         {
                             status: 'error',
-                            message: 'Please provide all required fields',
+                            message:
+                                'Please provide cart, delivery address, and payment method',
                         },
                         400
                     )
                 );
             }
 
-            ///TODO: check the Types
+            if (!Array.isArray(cart) || cart.length === 0) {
+                return res.send(
+                    new ApiResponse(
+                        {
+                            status: 'error',
+                            message: 'Cart should be a non-empty array',
+                        },
+                        400
+                    )
+                );
+            }
+
             const orderData = {
                 userId,
-                productId,
-                merchantId,
-                quantity,
                 deliveryAddress,
                 paymentMethod,
             };
 
-            const validator = new InputValidator(req);
-            validator.validateCreateOrder();
+            // const validator = new InputValidator(req);
+            // validator.validateCreateOrder();
 
-            await validator.validate(req, res, async () => {
-                const order = await orderServices.createOrderService(orderData);
-
-                return res.send(
-                    new ApiResponse(
-                        {
-                            status: 'success',
-                            message: 'Order created successfully',
-                            data: order,
+            // await validator.validate(req, res, async () => {
+                const orders = await Promise.all(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                cart.map(async (cartItem: any) => {
+                    const { productId, quantity } = cartItem;
+                    const product = await prisma.product.findUnique({
+                        where: {
+                            id: Number(productId),
                         },
-                        200
-                    )
-                );
-            });
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
+                    });
+                    if (!product) {
+                        throw new Error(
+                            `Product with id ${productId} not found`
+                        );
+                    }
+                    return {
+                        productId,
+                        quantity,
+                        merchantId: product.merchantId,
+                    };
+                })
+            );
+
+            const createdOrders = await Promise.all(
+                orders.map(async (order) => {
+                    return await orderServices.createOrderService({
+                        ...orderData,
+                        ...order,
+                    });
+                })
+            );
+
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'success',
+                        message: 'Orders created successfully',
+                        data: createdOrders,
+                    },
+                    200
+                )
+            );
+            // });
+        } catch (error) {
             console.log(error);
             return res.send(
                 new ApiResponse(
                     {
                         status: 'error',
-                        message: 'Error while creating order',
+                        message: 'Error while creating orders',
                     },
                     500
                 )
