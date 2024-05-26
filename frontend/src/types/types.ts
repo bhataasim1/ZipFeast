@@ -40,7 +40,6 @@ export type authUserType = {
   avatar: string;
 };
 
-
 export type MerchantType = {
   storeName: string;
   name: string;
@@ -61,4 +60,10 @@ export type ProductType = {
   createdAt: string;
   updatedAt: string;
   merchant: MerchantType;
+};
+
+export type CartItemType = {
+  id: number;
+  product: ProductType;
+  quantity: number;
 };
