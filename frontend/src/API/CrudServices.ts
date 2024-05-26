@@ -165,7 +165,8 @@ export class CrudServices {
     return this.fetchJson<null>(`${this.backendUrl}/profile/upload/avatar`, options);
   }
 
-  async placeOrder(data: { cart: [] }): Promise<ApiResponse<null>> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async placeOrder(data: any): Promise<ApiResponse<null>> {
     const options: AxiosRequestConfig = {
       method: "POST",
       headers: {

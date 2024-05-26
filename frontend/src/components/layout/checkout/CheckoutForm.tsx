@@ -12,47 +12,57 @@ import {
 import { FormCombinedInput } from "@/components/common/FormCombinedInput";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-// import { userRegistrationValidationSchema } from "../zodValidation";
-// import { CrudServices } from "@/API/CrudServices";
-// import { toast } from "sonner";
-// import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
-// import { useNavigate } from "react-router-dom";
+import { CrudServices } from "@/API/CrudServices";
+import { toast } from "sonner";
 import { FormSelectInput } from "@/components/common/FormSelectInput";
 import { LucideShoppingBag } from "lucide-react";
+import { CartItemType } from "@/types/types";
+import { checkoutFormValidationSchema } from "../form/zodValidation";
 
-const checkoutFormValidationSchema = z.object({
-  productId: z.array(z.string()),
-  quantity: z.array(z.number()),
-  deliveryAddress: z.string(),
-  paymentMethod: z.array(z.string()),
-  merchantId: z.number(),
-});
+
 type UserFormValue = z.infer<typeof checkoutFormValidationSchema>;
 
 const paymentMethodOptions = [{ label: "Cash on Delivery", value: "COD" }];
 
-export default function CheckoutForm() {
+interface CheckoutFormProps {
+  cartItems: CartItemType[];
+  clearCart: () => void;
+}
+
+export default function CheckoutForm({
+  cartItems,
+  clearCart,
+}: CheckoutFormProps) {
   const [loading, setLoading] = useState(false);
 
-  //   const crudService = new CrudServices();
-  //   const navigate = useNavigate();
-
-  const defaultValues: UserFormValue = {
-    productId: ["5"],
-    quantity: [3],
-    deliveryAddress: "Frisal, Kulgam, Jammu and Kashmir, India",
-    merchantId: 1,
-    paymentMethod: ["COD"],
-  };
-
+  const crudService = new CrudServices();
   const form = useForm<UserFormValue>({
     resolver: zodResolver(checkoutFormValidationSchema),
-    defaultValues,
+    defaultValues: {
+      cart: cartItems.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        merchantId: item.product.merchantId,
+      })),
+      deliveryAddress: "",
+      paymentMethod: "",
+    },
   });
 
   const onSubmit = async (values: UserFormValue) => {
     setLoading(true);
     console.log(values);
+    try {
+      const response = await crudService.placeOrder(values);
+      console.log(response);
+      if (!response.error) {
+        clearCart();
+        toast.success("Order placed successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to place order");
+    }
     setLoading(false);
   };
 
@@ -82,7 +92,7 @@ export default function CheckoutForm() {
           <FormField
             name="paymentMethod"
             render={({ field }) => (
-              <div>
+              <FormItem>
                 <FormLabel>Payment Mode</FormLabel>
                 <FormSelectInput
                   {...field}
@@ -91,7 +101,7 @@ export default function CheckoutForm() {
                   animated={true}
                 />
                 <FormMessage />
-              </div>
+              </FormItem>
             )}
           />
 
