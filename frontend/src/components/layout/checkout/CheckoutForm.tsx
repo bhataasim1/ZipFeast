@@ -19,6 +19,8 @@ import { LucideShoppingBag } from "lucide-react";
 import { CartItemType } from "@/types/types";
 import { checkoutFormValidationSchema } from "../form/zodValidation";
 import { paymentMethodOptions } from "@/constant/paymentOptions";
+import { useNavigate } from "react-router-dom";
+import { BASE_ENDPOINT } from "@/constant/endpoins";
 
 type UserFormValue = z.infer<typeof checkoutFormValidationSchema>;
 
@@ -32,6 +34,7 @@ export default function CheckoutForm({
   clearCart,
 }: CheckoutFormProps) {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const crudService = new CrudServices();
   const form = useForm<UserFormValue>({
@@ -56,6 +59,7 @@ export default function CheckoutForm({
       if (!response.error) {
         clearCart();
         toast.success("Order placed successfully");
+        navigate(BASE_ENDPOINT);
       }
     } catch (error) {
       console.log(error);

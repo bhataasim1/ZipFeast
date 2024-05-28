@@ -33,6 +33,7 @@ const UserOrders = () => {
         toast.error("Error fetching orders", error);
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cancelOrder = (id: number) => {
@@ -66,12 +67,12 @@ const UserOrders = () => {
     setUpdatingOrder(order);
   };
 
+  const closeUpdateOrder = () => {
+    setUpdatingOrder(null);
+  };
+
   if (updatingOrder) {
-    return (
-      <UpdateOrder
-        order={updatingOrder}
-      />
-    );
+    return <UpdateOrder order={updatingOrder} close={closeUpdateOrder} />;
   }
 
   if (loading) {

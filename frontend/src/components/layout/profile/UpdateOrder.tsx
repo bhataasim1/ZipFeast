@@ -15,6 +15,11 @@ import { Button } from "@/components/ui/button";
 import { FormSelectInput } from "@/components/common/FormSelectInput";
 import { paymentMethodOptions } from "@/constant/paymentOptions";
 import { Card, CardContent } from "@/components/ui/card";
+import { LucideArrowLeft } from "lucide-react";
+import { formatCurrency } from "@/lib/currencyFormatter";
+import { Badge } from "@/components/ui/badge";
+import { CrudServices } from "@/API/CrudServices";
+import { toast } from "sonner";
 
 const updateOrderValidationSchema = z.object({
   deliveryAddress: z.string({ message: "Delivery Address is required" }),
@@ -26,12 +31,14 @@ type UserFormValue = z.infer<typeof updateOrderValidationSchema>;
 interface UpdateOrderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   order: any;
+  close: () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function UpdateOrder({ order }: UpdateOrderProps) {
-  const [loading, setLoading] = useState(false);
-  console.log(order);
+export default function UpdateOrder({ order, close }: UpdateOrderProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const crudService = new CrudServices();
+  // console.log(order);
 
   const defaultValues: UserFormValue = {
     deliveryAddress: order.deliveryAddress,
@@ -45,17 +52,31 @@ export default function UpdateOrder({ order }: UpdateOrderProps) {
 
   const onSubmit = async (values: UserFormValue) => {
     setLoading(true);
-    console.log(values);
-    setLoading(false);
+    try{
+      const response = await crudService.updateOrder(order.id, values);
+      console.log("Response: ",response);
+      if(response.data){
+        toast.success("Order updated successfully");
+        close();
+      }
+    } catch (error) {
+      toast.error("Error updating order");
+      console.error(error);
+    }
   };
 
   return (
     <>
-      <Card className="flex-1 max-w-full mx-auto">
+      <Card className="flex-1 max-w-full m-3">
+        <div className="flex justify-start m-3">
+          <Button variant={"outline"} size={"icon"} onClick={close}>
+            <LucideArrowLeft size={20} />
+          </Button>
+        </div>
         <CardContent>
           <div className="flex flex-col items-center gap-4">
             <div className="flex flex-col items-center space-y-1.5 p-2 w-full">
-              <div className="w-full h-40">
+              <div className="w-full h-full md:w-96 md:h-96">
                 <img
                   src={order.items[0].product.productImage}
                   alt={order.items[0].product.name}
@@ -71,8 +92,10 @@ export default function UpdateOrder({ order }: UpdateOrderProps) {
                 {order.items[0].product.description}
               </span>
             </div>
-            <h3 className="text-sm font-bold py-3">
-              {order.items[0].product.price}
+            <h3 className="text-sm font-bold">
+              <Badge variant="destructive">
+                {formatCurrency(order.items[0].product.price)}
+              </Badge>
             </h3>
           </div>
 
