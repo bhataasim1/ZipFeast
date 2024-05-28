@@ -1,16 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { LucideTrash2 } from "lucide-react";
+import { LucideEdit2, LucideTrash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { CrudServices } from "@/API/CrudServices";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import UpdateOrder from "./UpdateOrder";
 
 const UserOrders = () => {
   const crudService = new CrudServices();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [updatingOrder, setUpdatingOrder] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const UserOrders = () => {
         toast.error("Error fetching orders", error);
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cancelOrder = (id: number) => {
@@ -58,6 +61,19 @@ const UserOrders = () => {
       ? orders
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         orders.filter((order: any) => order.orderStatus === filterStatus);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleupdateOrder = (order: any) => {
+    setUpdatingOrder(order);
+  };
+
+  const closeUpdateOrder = () => {
+    setUpdatingOrder(null);
+  };
+
+  if (updatingOrder) {
+    return <UpdateOrder order={updatingOrder} close={closeUpdateOrder} />;
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -129,13 +145,23 @@ const UserOrders = () => {
                     Buy Again
                   </Button>
                 ) : (
-                  <Button
-                    onClick={() => cancelOrder(order.id)}
-                    variant={"outline"}
-                    className="w-full text-red-600 border-2 border-red-600"
-                  >
-                    <LucideTrash2 size={20} /> Cancel Order
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => cancelOrder(order.id)}
+                      variant={"outline"}
+                      className="w-1/2 text-red-600 border-2 border-red-600"
+                    >
+                      <LucideTrash2 size={20} /> Cancel Order
+                    </Button>
+
+                    <Button
+                      onClick={() => handleupdateOrder(order)}
+                      variant={"outline"}
+                      className="w-1/2 text-green-600 border-2 border-green-600"
+                    >
+                      <LucideEdit2 size={20} /> Update Order
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>

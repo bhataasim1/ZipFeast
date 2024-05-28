@@ -162,7 +162,10 @@ export class CrudServices {
       data: data,
     };
 
-    return this.fetchJson<null>(`${this.backendUrl}/profile/upload/avatar`, options);
+    return this.fetchJson<null>(
+      `${this.backendUrl}/profile/upload/avatar`,
+      options
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -177,5 +180,24 @@ export class CrudServices {
     };
 
     return this.fetchJson<null>(`${this.backendUrl}/order/create`, options);
+  }
+
+  async updateOrder(orderId: {orderId: number}, data: {
+    deliveryAddress: string;
+    paymentMethod: string;
+  }): Promise<ApiResponse<null>> {
+    const options: AxiosRequestConfig = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this?.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson<null>(
+      `${this.backendUrl}/order/update/${orderId}`,
+      options
+    );
   }
 }
