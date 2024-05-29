@@ -64,8 +64,16 @@ export class IndexController {
     }
 
     public async getProducts(req: Request, res: Response) {
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (Number(page) - 1) * Number(limit);
+
         try {
             const products = await prisma.product.findMany({
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                skip: skip,
+                take: Number(limit),
                 include: {
                     merchant: {
                         select: {
@@ -78,10 +86,18 @@ export class IndexController {
                 },
             });
 
+            const totalProducts = await prisma.product.count();
+
             return res.send(
                 new ApiResponse({
                     status: 'success',
                     data: products,
+                    meta: {
+                        total: totalProducts,
+                        page: Number(page),
+                        limit: Number(limit),
+                        totalPages: Math.ceil(totalProducts / Number(limit)),
+                    },
                 })
             );
         } catch (error) {
