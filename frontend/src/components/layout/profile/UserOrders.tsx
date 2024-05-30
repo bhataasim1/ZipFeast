@@ -6,6 +6,7 @@ import { CrudServices } from "@/API/CrudServices";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import UpdateOrder from "./UpdateOrder";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const UserOrders = () => {
   const crudService = new CrudServices();
@@ -126,12 +127,13 @@ const UserOrders = () => {
                         <h5 className="text-sm py-2 font-medium truncate w-full overflow-ellipsis">
                           {item.product.name}
                         </h5>
-                        {/* <span className="text-sm font-light overflow-ellipsis">
-                          {item.product.description}
-                        </span> */}
+                        <span className="text-sm font-light overflow-ellipsis">
+                          Qunatity: {order.totalQuantity} x{" "}
+                          {formatCurrency(item.product.price)}
+                        </span>
                       </div>
                       <h3 className="text-sm font-bold py-3">
-                        {item.product.price}
+                        {formatCurrency(order.totalAmount)}
                       </h3>
                     </div>
                   </Link>
