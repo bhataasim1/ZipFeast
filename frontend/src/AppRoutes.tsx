@@ -14,6 +14,7 @@ import ProfilePage from "./components/pages/ProfilePage";
 import UserDashboard from "./components/layout/profile/UserDashboard";
 import UserOrders from "./components/layout/profile/UserOrders";
 import CheckoutPage from "./components/pages/CheckoutPage";
+import SearchAndStorePage from "./components/pages/SearchAndStorePage";
 
 const store = createStore({
   authName: "token",
@@ -60,6 +61,15 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <SingleProduct />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/search"
+            element={
+              <Layout>
+                <SearchAndStorePage />
               </Layout>
             }
           />

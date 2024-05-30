@@ -68,4 +68,15 @@ export class ProductServices {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.fetchJson<any>(`${this.backendUrl}/${id}`, options);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async searchProducts(query: string): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.fetchJson<any>(`http://localhost:3000/api/v1/search?q=${query}`, options);
+  }
 }

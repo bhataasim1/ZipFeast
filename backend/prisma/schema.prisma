@@ -1,7 +1,8 @@
 // This is your updated Prisma schema file for MySQL.
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -61,7 +62,7 @@ model Product {
   name         String
   description  String
   price        String
-  stock        String?        @default("0")
+  stock        String?     @default("0")
   category     String
   productImage String
   merchant     Merchant    @relation(fields: [merchantId], references: [id])

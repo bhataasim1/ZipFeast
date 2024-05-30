@@ -8,12 +8,12 @@ import { Link } from "react-router-dom";
 import MobileSidebar from "./sidebar/MobileSidebar";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../themes/ModeToggle";
-import FormSearchBox from "../common/FormSearchBox";
 import { useShoppingCart } from "@/context/ShoppingCartContext";
-import { LucideShoppingCart } from "lucide-react";
+import { LucideSearch, LucideShoppingCart } from "lucide-react";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import { UserNav } from "./User-Nav";
 import { SIGN_IN, SIGN_UP } from "@/constant/endpoins";
+// import { Input } from "../ui/input";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,12 +31,20 @@ export const Header = () => {
             </Link>
           </NavigationMenuItem>
 
-          <div className="flex-grow mx-4 max-w-lg">
-            <FormSearchBox />
-          </div>
+          {/* If we need this search then we may require algolia or elastic search */}
+          {/* <div className="flex-grow mx-4 max-w-lg">
+            <Link to={"/search"}>
+              <Input placeholder={`Search for Ch`} className="w-full" />
+            </Link>
+          </div> */}
 
           {/* mobile */}
           <span className="flex md:hidden space-x-1">
+            <Link to={"/search"}>
+              <Button variant={"outline"} size={"icon"}>
+                <LucideSearch />
+              </Button>
+            </Link>
             <ModeToggle />
             <Button
               variant="outline"
@@ -58,6 +66,11 @@ export const Header = () => {
           {/* <DesktopSidebar /> */}
 
           <div className="hidden md:flex gap-2">
+            <Link to={"/search"}>
+              <Button variant={"outline"} size={"icon"}>
+                <LucideSearch />
+              </Button>
+            </Link>
             <ModeToggle />
             {!isAuthenticated ? (
               <>

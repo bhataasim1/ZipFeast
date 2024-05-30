@@ -145,4 +145,56 @@ export class IndexController {
             })
         );
     }
+
+    public async searchProducts(req: Request, res: Response) {
+        const { q } = req.query;
+        try {
+            const products = await prisma.product.findMany({
+                where: {
+                    OR: [
+                        {
+                            name: {
+                                contains: String(q),
+                            },
+                        },
+                        {
+                            description: {
+                                contains: String(q),
+                            },
+                        },
+                        {
+                            category: {
+                                contains: String(q),
+                            },
+                        }
+                    ],
+                },
+                include: {
+                    merchant: {
+                        select: {
+                            storeName: true,
+                            name: true,
+                            address: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+
+            return res.send(
+                new ApiResponse({
+                    status: 'success',
+                    data: products,
+                })
+            );
+        } catch (error) {
+            return res.send(
+                new ApiResponse({
+                    status: 'error',
+                    message: 'Something went wrong',
+                    error,
+                })
+            );
+        }
+    }
 }
