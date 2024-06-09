@@ -134,7 +134,7 @@ export class MerchantAuthController {
                     new ApiResponse(
                         {
                             status: 'error',
-                            message: 'Merchant does not exist',
+                            message: 'Invalid credentials',
                         },
                         401
                     )
