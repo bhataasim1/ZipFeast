@@ -1,4 +1,4 @@
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,9 +28,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import TablePagination from "../TablePagination";
 import { CrudServices } from "@/API/CrudServices";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Product } from "@/types/types";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type ProductsTableProps = {
   products: Product[];
@@ -42,6 +44,32 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
   const crudServices = new CrudServices();
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [paginatedProducts, setPaginatedProducts] = useState<Product[]>([]);
+
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const debouncedSearch = useDebounce(searchTerm, 300);
+
+  useEffect(() => {
+    const filteredProducts = products.filter((product) =>
+      product.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+    setPaginatedProducts(
+      filteredProducts.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+      )
+    );
+  }, [products, debouncedSearch, currentPage]);
 
   const handleDeleteProduct = async (productId: string) => {
     setLoading(true);
@@ -51,6 +79,7 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
         toast.error(response.data.message);
       } else {
         toast.success("Product deleted successfully.");
+        // After deletion, refetch products or update products state
       }
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -58,16 +87,6 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
-  const paginatedProducts = products.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   return (
@@ -94,6 +113,15 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
           <CardHeader>
             <CardTitle>Products</CardTitle>
             <CardDescription>Manage your products.</CardDescription>
+            <div className="relative ml-auto flex-1 md:grow-0">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                onChange={handleSearch}
+              />
+            </div>
           </CardHeader>
           <CardContent>
             <Table>
