@@ -181,4 +181,77 @@ export class MerchantProfileController {
             );
         }
     }
+
+    public async getMerchantProfile(req: Request, res: Response) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        const merchantId = req.user?.id;
+        // console.log('Merchant ID:', req.user);
+        if(!merchantId) {
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Unauthorized Access',
+                    },
+                    401
+                )
+            );
+        }
+
+        try {
+            const merchant = await prisma.merchant.findUnique({
+                where: {
+                    id: Number(merchantId),
+                },
+                select: {
+                    id: true,
+                    storeName: true,
+                    name: true,
+                    email: true,
+                    avatar: true,
+                    phone: true,
+                    address: true,
+                    city: true,
+                    pincode: true,
+                    state: true,
+                },
+            });
+
+            if (!merchant) {
+                return res.send(
+                    new ApiResponse(
+                        {
+                            status: 'error',
+                            message: 'Merchant not found',
+                        },
+                        404
+                    )
+                );
+            }
+
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'success',
+                        message: 'Merchant Profile',
+                        data: merchant,
+                    },
+                    200
+                )
+            );
+        } catch (error) {
+            console.error('Error getting merchant profile:', error);
+            return res.send(
+                new ApiResponse(
+                    {
+                        status: 'error',
+                        message: 'Something Went Wrong',
+                        error,
+                    },
+                    500
+                )
+            );
+        }
+    }
 }
