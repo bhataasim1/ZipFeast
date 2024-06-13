@@ -24,7 +24,7 @@ import { authUserType } from "@/types/types";
 type UserFormValue = z.infer<typeof merchnatSignInValidationSchema>;
 
 const defaultValues: UserFormValue = {
-  email: "merchant2@gmail.com",
+  email: "merchant1@gmail.com",
   password: "aasim",
 };
 
