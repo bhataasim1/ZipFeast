@@ -1,6 +1,7 @@
 import { Home, LucideZap, Package, ShoppingCart } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { MERCHANT_DASHBOARD } from "@/constants/endpoints";
 
 const DashboardNav = () => {
   const location = useLocation();
@@ -10,7 +11,7 @@ const DashboardNav = () => {
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
       <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
         <Link
-          to="/"
+          to={MERCHANT_DASHBOARD}
           className={`group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base ${
             pathname === "/" ? "text-foreground" : ""
           }`}

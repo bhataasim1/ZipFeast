@@ -26,8 +26,50 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import TablePagination from "../TablePagination";
+import { CrudServices } from "@/API/CrudServices";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Product } from "@/types/types";
 
-const ProductsTable = () => {
+type ProductsTableProps = {
+  products: Product[];
+};
+
+const ITEMS_PER_PAGE = 10;
+
+const ProductsTable = ({ products }: ProductsTableProps) => {
+  const crudServices = new CrudServices();
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handleDeleteProduct = async (productId: string) => {
+    setLoading(true);
+    try {
+      const response = await crudServices.deleteProduct(productId);
+      if (response.data.status === "error") {
+        toast.error(response.data.message);
+      } else {
+        toast.success("Product deleted successfully.");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Error deleting product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Tabs defaultValue="all">
       <div className="flex items-center">
@@ -46,8 +88,9 @@ const ProductsTable = () => {
           </Button>
         </div>
       </div>
+
       <TabsContent value="all">
-        <Card x-chunk="dashboard-06-chunk-0">
+        <Card>
           <CardHeader>
             <CardTitle>Products</CardTitle>
             <CardDescription>Manage your products.</CardDescription>
@@ -72,54 +115,84 @@ const ProductsTable = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className="hidden sm:table-cell">
-                    <img
-                      alt="Product img"
-                      className="aspect-square rounded-md object-cover"
-                      height="64"
-                      src="https://cdn.zeptonow.com/production///tr:w-350,ar-1021-1021,pr-true,f-auto,q-80/cms/product_variant/d8aeab4b-81fc-4a47-978d-855017898856.jpeg"
-                      width="64"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">Kashmiri Beef</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">10</Badge>
-                  </TableCell>
-                  <TableCell>{formatCurrency(400)}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">Non Veg</Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    2023-07-12 10:42 AM
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
+                {paginatedProducts.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center font-bold">
+                      No products found.
+                    </TableCell>
+                  </TableRow>
+                )}
+                {paginatedProducts.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell className="hidden sm:table-cell">
+                      <img
+                        alt={product.name}
+                        className="aspect-square rounded-md object-cover"
+                        height="64"
+                        src={product.productImage}
+                        width="64"
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{product.stock}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      {formatCurrency(parseFloat(product.price))}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{product.category}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {new Date(product.createdAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteProduct(product.id)}
+                            disabled={loading}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
           <CardFooter>
             <div className="text-xs text-muted-foreground">
-              Showing <strong>1-10</strong> of <strong>32</strong> products
+              Showing <strong>{(currentPage - 1) * ITEMS_PER_PAGE + 1}</strong>{" "}
+              to{" "}
+              <strong>
+                {currentPage * ITEMS_PER_PAGE > products.length
+                  ? products.length
+                  : currentPage * ITEMS_PER_PAGE}
+              </strong>{" "}
+              of <strong>{products.length}</strong> products
             </div>
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </CardFooter>
         </Card>
       </TabsContent>

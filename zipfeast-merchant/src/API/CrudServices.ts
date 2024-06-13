@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BACKEND_URL } from "@/constants/endpoints";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
@@ -46,7 +47,6 @@ export class CrudServices {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async registerUser(data: any): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "POST",
@@ -54,14 +54,12 @@ export class CrudServices {
       data: JSON.stringify(data),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.fetchJson<any>(`${this.backendUrl}/register`, options);
   }
 
   async loginUser(data: {
     email: string;
     password: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "POST",
@@ -69,7 +67,65 @@ export class CrudServices {
       data: JSON.stringify(data),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.fetchJson<any>(`${this.backendUrl}/login`, options);
+  }
+
+  async getAllProducts(): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "GET",
+      headers: {
+        Authorization: this.token,
+      },
+    };
+
+    return this.fetchJson(`${this.backendUrl}/product/all`, options);
+  }
+
+  async createProduct(data: any): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson(`${this.backendUrl}/product/create`, options);
+  }
+
+  async updateProduct(data: any): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson(`${this.backendUrl}/product/update`, options);
+  }
+
+  async deleteProduct(id: string): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "DELETE",
+      headers: {
+        Authorization: this.token,
+      },
+    };
+
+    return this.fetchJson(`${this.backendUrl}/product/delete/${id}`, options);
+  }
+
+  async getAllOrders(): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "GET",
+      headers: {
+        Authorization: this.token,
+      },
+    };
+
+    return this.fetchJson(`${this.backendUrl}/order/all`, options);
   }
 }
