@@ -69,6 +69,7 @@ export default function MerchantLoginForm() {
             },
           }),
             navigate(MERCHANT_DASHBOARD);
+            toast.success(`Login Successfull ${response.data.merchant.name}`);
         }
       }
     } catch (error) {
