@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ListFilter, MoreHorizontal } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ListFilter, MoreHorizontal, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +30,8 @@ import {
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { Order } from "@/types/types";
 import TablePagination from "../TablePagination";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type OrderTableProps = {
   orders: Order[];
@@ -43,7 +45,34 @@ const OrderTable = ({ orders }: OrderTableProps) => {
     delivered: true,
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Order[]>(orders);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const debouncedSearch = useDebounce(searchTerm, 300);
+
+  useEffect(() => {
+    const results = orders.filter((order) =>
+      matchesSearch(order, debouncedSearch)
+    );
+    setSearchResults(results);
+  }, [debouncedSearch, orders]);
+
+  const matchesSearch = (order: Order, searchTerm: string): boolean => {
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+    if (order.user.name.toLowerCase().includes(normalizedSearch)) {
+      return true;
+    }
+    if (order.deliveryAddress.toLowerCase().includes(normalizedSearch)) {
+      return true;
+    }
+    if (
+      order.items[0]?.product?.name.toLowerCase().includes(normalizedSearch)
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   const toggleFilter = (filterName: string) => {
     setFilters((prevFilters) => ({
@@ -52,7 +81,7 @@ const OrderTable = ({ orders }: OrderTableProps) => {
     }));
   };
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = searchResults.filter((order) => {
     if (filters.pending && order.orderStatus === "PENDING") return true;
     if (filters.delivered && order.orderStatus === "DELIVERED") return true;
     return false;
@@ -68,9 +97,9 @@ const OrderTable = ({ orders }: OrderTableProps) => {
     setCurrentPage(page);
   };
 
-  console.log("orders", orders);
-  console.log("filteredOrders", filteredOrders);
-  console.log("paginatedOrders", paginatedOrders);
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <>
@@ -108,6 +137,15 @@ const OrderTable = ({ orders }: OrderTableProps) => {
         <CardHeader>
           <CardTitle>Orders</CardTitle>
           <CardDescription>Manage your Orders.</CardDescription>
+          <div className="relative ml-auto flex-1 md:grow-0">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search..."
+              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+              onChange={handleSearch}
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -132,7 +170,7 @@ const OrderTable = ({ orders }: OrderTableProps) => {
             <TableBody>
               {paginatedOrders.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center font-bold">
+                  <TableCell colSpan={10} className="text-center font-bold">
                     No orders found
                   </TableCell>
                 </TableRow>
