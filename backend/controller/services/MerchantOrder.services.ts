@@ -14,7 +14,7 @@ export class MerchantOrderService extends OrderServices {
                 items: {
                     select: {
                         quantity: true,
-                        product: { select: { id: true, name: true } },
+                        product: { select: { id: true, name: true, productImage: true } },
                     },
                 },
             },
