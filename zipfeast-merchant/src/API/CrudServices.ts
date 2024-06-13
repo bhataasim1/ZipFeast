@@ -128,4 +128,41 @@ export class CrudServices {
 
     return this.fetchJson(`${this.backendUrl}/order/all`, options);
   }
+
+  async getMerchantProfile(): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "GET",
+      headers: {
+        Authorization: this.token,
+      },
+    };
+
+    return this.fetchJson(`${this.backendUrl}/`, options);
+  }
+
+  async uploadProfilePicture(data: any): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: this.token,
+      },
+      data: data,
+    };
+
+    return this.fetchJson(`${this.backendUrl}/profile/upload/avatar`, options);
+  }
+
+  async updateMerchantProfile(data: any): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.token,
+      },
+      data: JSON.stringify(data),
+    };
+
+    return this.fetchJson(`${this.backendUrl}/profile/update`, options);
+  }
 }
