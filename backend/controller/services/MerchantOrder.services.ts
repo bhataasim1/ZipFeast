@@ -10,7 +10,7 @@ export class MerchantOrderService extends OrderServices {
         const orders = await prisma.order.findMany({
             where: { merchantId },
             include: {
-                user: { select: { id: true, email: true, phone: true } },
+                user: { select: { id: true, name: true, email: true, phone: true } },
                 items: {
                     select: {
                         quantity: true,
