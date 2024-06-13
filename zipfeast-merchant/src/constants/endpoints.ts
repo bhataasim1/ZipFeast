@@ -3,3 +3,5 @@ export const BASE_ENDPOINT = "/";
 export const LOGIN_ENDPOINT = "/";
 export const REGISTER_ENDPOINT = "/register";
 export const MERCHANT_DASHBOARD = "/dashboard";
+export const MERCHANT_PRODUCTS = "/products";
+export const MERCHANT_ORDERS = "/orders";
