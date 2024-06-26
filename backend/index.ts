@@ -37,3 +37,5 @@ app.get('/', (req, res) => {
 app.listen(env.PORT, () => {
     console.log(`Server is running on ${env.HOST}:${env.PORT}`);
 });
+
+export default app;
