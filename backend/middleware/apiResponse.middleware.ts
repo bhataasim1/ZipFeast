@@ -12,6 +12,7 @@ export function sendApiResponseMiddleware(
 ) {
     const originalSend = res.send;
     // Override the res.send method
+    // @ts-expect-error there is no type for res
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     res.send = (apiResponse: any) => {
         if (apiResponse instanceof ApiResponse) {
