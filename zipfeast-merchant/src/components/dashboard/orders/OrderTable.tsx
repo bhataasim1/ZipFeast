@@ -32,6 +32,7 @@ import { Order } from "@/types/types";
 import TablePagination from "../TablePagination";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
+import DropDownModel from "./DropDownModel";
 
 type OrderTableProps = {
   orders: Order[];
@@ -48,6 +49,8 @@ const OrderTable = ({ orders }: OrderTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Order[]>(orders);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -99,6 +102,11 @@ const OrderTable = ({ orders }: OrderTableProps) => {
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleOrderStatus = (order: Order) => () => {
+    setSelectedOrder(order);
+    setIsOpen(true);
   };
 
   return (
@@ -216,8 +224,9 @@ const OrderTable = ({ orders }: OrderTableProps) => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleOrderStatus(order)}>
+                          Update Order Status
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -243,6 +252,14 @@ const OrderTable = ({ orders }: OrderTableProps) => {
           />
         </CardFooter>
       </Card>
+      {selectedOrder && (
+        <DropDownModel
+          isOpen={isOpen}
+          title="Update Order Status"
+          onClose={() => setIsOpen(false)}
+          order={selectedOrder}
+        />
+      )}
     </>
   );
 };
