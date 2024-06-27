@@ -165,4 +165,20 @@ export class CrudServices {
 
     return this.fetchJson(`${this.backendUrl}/profile/update`, options);
   }
+
+  async updateOrderStatus(
+    id: number,
+    orderStatus: string
+  ): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.token,
+      },
+      data: JSON.stringify({ orderStatus }),
+    };
+
+    return this.fetchJson(`${this.backendUrl}/order/update/${id}`, options);
+  }
 }
