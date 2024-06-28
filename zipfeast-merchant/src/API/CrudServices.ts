@@ -94,17 +94,20 @@ export class CrudServices {
     return this.fetchJson(`${this.backendUrl}/product/create`, options);
   }
 
-  async updateProduct(data: any): Promise<ApiResponse<any>> {
+  async updateProduct(productId: string, data: any): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: this.token,
       },
-      data: JSON.stringify(data),
+      data: data,
     };
 
-    return this.fetchJson(`${this.backendUrl}/product/update`, options);
+    return this.fetchJson(
+      `${this.backendUrl}/product/update/${productId}`,
+      options
+    );
   }
 
   async deleteProduct(id: string): Promise<ApiResponse<any>> {

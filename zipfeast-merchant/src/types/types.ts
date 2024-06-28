@@ -24,7 +24,7 @@ export type Product = {
   name: string;
   price: string;
   productImage: string;
-  stock: number;
+  stock: string;
   category: string;
   isAvailable: boolean;
   merchantId: string;
