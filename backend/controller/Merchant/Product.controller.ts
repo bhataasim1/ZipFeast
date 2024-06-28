@@ -163,7 +163,8 @@ export class ProductController {
                 );
             }
 
-            const productImage = req.file?.filename;
+            const productImage = req.file as UploadFile;
+            console.log(productImage);
 
             const data = {
                 name,
@@ -171,7 +172,7 @@ export class ProductController {
                 price,
                 category,
                 stock,
-                productImage,
+                productImage: productImage?.location,
             };
 
             const validator = new InputValidator(req);
