@@ -43,7 +43,8 @@ const ITEMS_PER_PAGE = 10;
 const OrderTable = ({ orders }: OrderTableProps) => {
   const [filters, setFilters] = useState<{ [key: string]: boolean }>({
     pending: true,
-    delivered: true,
+    delivered: false,
+    arriving: false,
   });
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -78,15 +79,18 @@ const OrderTable = ({ orders }: OrderTableProps) => {
   };
 
   const toggleFilter = (filterName: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterName]: !prevFilters[filterName],
-    }));
+    setFilters({
+      pending: false,
+      delivered: false,
+      arriving: false,
+      [filterName]: true,
+    });
   };
 
   const filteredOrders = searchResults.filter((order) => {
     if (filters.pending && order.orderStatus === "PENDING") return true;
     if (filters.delivered && order.orderStatus === "DELIVERED") return true;
+    if (filters.arriving && order.orderStatus === "ARRIVING") return true;
     return false;
   });
 
@@ -136,6 +140,12 @@ const OrderTable = ({ orders }: OrderTableProps) => {
                 onCheckedChange={() => toggleFilter("delivered")}
               >
                 Delivered
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={filters.arriving}
+                onCheckedChange={() => toggleFilter("arriving")}
+              >
+                Arriving
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
