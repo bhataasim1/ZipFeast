@@ -34,6 +34,7 @@ import { Product } from "@/types/types";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import DropDownModel from "./DropDownModel";
+import AddProductDropDown from "./add/AddProductDropDown";
 
 type ProductsTableProps = {
   products: Product[];
@@ -49,6 +50,7 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
   const [paginatedProducts, setPaginatedProducts] = useState<Product[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
 
@@ -97,6 +99,10 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
     setIsOpen(true);
   };
 
+  const handleCreateProduct = () => {
+    setIsAddOpen(true);
+  };
+
   return (
     <>
       <Tabs defaultValue="all">
@@ -108,7 +114,11 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <Button size="sm" className="h-7 gap-1">
+            <Button
+              size="sm"
+              className="h-7 gap-1"
+              onClick={handleCreateProduct}
+            >
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Add Product
@@ -246,6 +256,13 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
           product={product}
         />
       )}
+      {
+        <AddProductDropDown
+          isOpen={isAddOpen}
+          title="Add Product"
+          onClose={() => setIsAddOpen(false)}
+        />
+      }
     </>
   );
 };
