@@ -65,7 +65,8 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
   const debouncedSearch = useDebounce(searchTerm, 300);
 
   useEffect(() => {
-    const filteredProducts = products.filter((product) =>
+    const sortedProducts = [...products].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const filteredProducts = sortedProducts.filter((product) =>
       product.name.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
     setPaginatedProducts(
