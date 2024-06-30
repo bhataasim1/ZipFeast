@@ -250,6 +250,7 @@ const DropDownModel = ({
                 variant="destructive"
                 onClick={onClose}
                 disabled={loading}
+                type="button"
               >
                 Cancel
               </Button>
