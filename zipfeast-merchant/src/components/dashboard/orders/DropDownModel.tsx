@@ -97,7 +97,7 @@ const DropDownModel = ({
               )}
             />
             <DialogFooter className="mt-2">
-              <Button variant="destructive" onClick={onClose}>
+              <Button variant="destructive" onClick={onClose} type="button">
                 Cancel
               </Button>
               <Button type="submit">Confirm</Button>
