@@ -6,7 +6,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/types/types";
 import {
   Form,
   FormControl,
@@ -26,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 
-const orderStatusValidation = z.object({
+const createProductValidationSchema = z.object({
   name: z.string().nonempty("Name is required"),
   price: z.string().nonempty("Price is required"),
   description: z.string().nonempty("Description is required"),
@@ -36,35 +35,33 @@ const orderStatusValidation = z.object({
   productImage: z.instanceof(File).optional(),
 });
 
-type UserFormValue = z.infer<typeof orderStatusValidation>;
+type UserFormValue = z.infer<typeof createProductValidationSchema>;
 
-type DropDownModelProps = {
+type AddProductDropDownProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  product: Product;
 };
 
-const DropDownModel = ({
+const AddProductDropDown = ({
   isOpen,
   onClose,
   title,
-  product,
-}: DropDownModelProps) => {
+}: AddProductDropDownProps) => {
   // console.log(product);
 
   const [, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(orderStatusValidation),
+    resolver: zodResolver(createProductValidationSchema),
     defaultValues: {
-      name: product.name,
-      price: product.price,
-      description: product.description,
-      category: product.category,
-      stock: product.stock,
-      isAvailable: product.isAvailable,
+      name: "New Product",
+      price: "110",
+      description: "New Product Description",
+      category: "New Category",
+      stock: "10",
+      isAvailable: true,
     },
   });
 
@@ -84,7 +81,7 @@ const DropDownModel = ({
     }
     try {
       setLoading(true);
-      const response = await crudServices.updateProduct(product.id, formData);
+      const response = await crudServices.createProduct(formData);
       console.log("Success  ", response);
       if (response.data.status === "success") {
         toast.success("Product updated successfully");
@@ -102,7 +99,6 @@ const DropDownModel = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <p>Product: {product?.name}</p>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -222,11 +218,6 @@ const DropDownModel = ({
               name="productImage"
               render={({ field }) => (
                 <FormItem className="mt-2">
-                  <img
-                    src={product.productImage}
-                    alt="product"
-                    className="w-20 h-20"
-                  />
                   <FormControl>
                     <Input
                       type="file"
@@ -255,7 +246,7 @@ const DropDownModel = ({
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Update"}
+                {loading ? "Adding..." : "Add Product"}
               </Button>
             </DialogFooter>
           </form>
@@ -265,4 +256,4 @@ const DropDownModel = ({
   );
 };
 
-export default DropDownModel;
+export default AddProductDropDown;

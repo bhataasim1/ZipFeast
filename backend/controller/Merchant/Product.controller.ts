@@ -69,6 +69,7 @@ export class ProductController {
         }
         try {
             const productImage = req.file as UploadFile;
+            // console.log("Adding Image",productImage);
             if (!productImage) {
                 return res.send(
                     new ApiResponse({
@@ -85,7 +86,7 @@ export class ProductController {
                 price,
                 category,
                 stock,
-                productImage: productImage.location,
+                productImage: productImage?.location,
             };
 
             const validator = new InputValidator(req);
@@ -164,7 +165,7 @@ export class ProductController {
             }
 
             const productImage = req.file as UploadFile;
-            console.log(productImage);
+            // console.log(productImage);
 
             const data = {
                 name,

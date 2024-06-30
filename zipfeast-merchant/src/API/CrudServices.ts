@@ -85,10 +85,10 @@ export class CrudServices {
     const options: AxiosRequestConfig = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: this.token,
       },
-      data: JSON.stringify(data),
+      data: data,
     };
 
     return this.fetchJson(`${this.backendUrl}/product/create`, options);
