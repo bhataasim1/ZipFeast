@@ -9,5 +9,6 @@ router.get('/merchant/:storeName', indexController.getMerchantByName);
 router.get('/products', indexController.getProducts);
 router.get('/products/:productId', indexController.getProductById);
 router.get('/search', indexController.searchProducts);
+router.get('/get-categories', indexController.getCategories);
 
 export default router;

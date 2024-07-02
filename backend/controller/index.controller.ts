@@ -166,7 +166,7 @@ export class IndexController {
                             category: {
                                 contains: String(q),
                             },
-                        }
+                        },
                     ],
                 },
                 include: {
@@ -196,5 +196,24 @@ export class IndexController {
                 })
             );
         }
+    }
+
+    public async getCategories(req: Request, res: Response) {
+        const categories = await prisma.product.findMany({
+            select: {
+                category: true,
+            },
+        });
+
+        const uniqueCategories = Array.from(
+            new Set(categories.map((category) => category.category))
+        );
+
+        return res.send(
+            new ApiResponse({
+                status: 'success',
+                data: uniqueCategories,
+            })
+        );
     }
 }
