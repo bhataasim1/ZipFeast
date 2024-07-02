@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BACKEND_URL } from "@/constant/endpoins";
 
@@ -44,39 +45,48 @@ export class ProductServices {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getAllProducts(page = 1, limit = 20): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.fetchJson<any>(
       `${this.backendUrl}?page=${page}&limit=${limit}`,
       options
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getProductById(id: number): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.fetchJson<any>(`${this.backendUrl}/${id}`, options);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async searchProducts(query: string): Promise<ApiResponse<any>> {
     const options: AxiosRequestConfig = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.fetchJson<any>(`http://localhost:3000/api/v1/search?q=${query}`, options);
+    return this.fetchJson<any>(
+      `http://localhost:3000/api/v1/search?q=${query}`,
+      options
+    );
+  }
+
+  async getCategories(): Promise<ApiResponse<any>> {
+    const options: AxiosRequestConfig = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+
+    return this.fetchJson<any>(
+      `http://localhost:3000/api/v1/get-categories`,
+      options
+    );
   }
 }
