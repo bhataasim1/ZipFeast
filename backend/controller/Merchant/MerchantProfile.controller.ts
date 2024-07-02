@@ -9,7 +9,7 @@ export class MerchantProfileController {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         const merchantId = req.user?.id;
-        console.log('Merchant ID:', merchantId);
+        // console.log('Merchant ID:', merchantId);
         const {
             storeName,
             name,

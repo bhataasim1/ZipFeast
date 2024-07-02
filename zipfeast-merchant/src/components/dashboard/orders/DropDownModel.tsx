@@ -40,7 +40,7 @@ const DropDownModel = ({
   title,
   order,
 }: DropDownModelProps) => {
-  console.log(order);
+  // console.log(order);
   const orderStatusOptions = [
     { label: "Pending", value: "PENDING" },
     { label: "Arriving", value: "ARRIVING" },

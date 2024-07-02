@@ -13,7 +13,7 @@ export class UserProfileController {
 
     public getUserProfile = async (req: Request, res: Response) => {
         const userId = this.getUserId(req);
-        console.log('User ID:', userId);
+        // console.log('User ID:', userId);
 
         if (!userId) return this.sendErrorResponse(res, 'User not found', 404);
 
@@ -38,7 +38,7 @@ export class UserProfileController {
 
     public updateUser = async (req: Request, res: Response) => {
         const userId = this.getUserId(req);
-        console.log('User ID:', userId);
+        // console.log('User ID:', userId);
 
         if (!userId) {
             return this.sendErrorResponse(res, 'User not found', 404);
@@ -85,7 +85,7 @@ export class UserProfileController {
             }
 
             const newAvatar = req.file as UploadFile;
-            console.log('New Avatar:', newAvatar);
+            // console.log('New Avatar:', newAvatar);
             if (!newAvatar) {
                 return this.sendErrorResponse(
                     res,

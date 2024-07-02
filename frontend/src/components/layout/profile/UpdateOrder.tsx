@@ -54,7 +54,7 @@ export default function UpdateOrder({ order, close }: UpdateOrderProps) {
     setLoading(true);
     try{
       const response = await crudService.updateOrder(order.id, values);
-      console.log("Response: ",response);
+      // console.log("Response: ",response);
       if(response.data){
         toast.success("Order updated successfully");
         close();

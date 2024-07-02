@@ -24,8 +24,8 @@ import { authUserType } from "@/types/types";
 type UserFormValue = z.infer<typeof merchnatSignInValidationSchema>;
 
 const defaultValues: UserFormValue = {
-  email: "merchant1@gmail.com",
-  password: "aasim",
+  email: "merchant@zipfeast.com",
+  password: "Aasim@123",
 };
 
 export default function MerchantLoginForm() {
@@ -46,7 +46,7 @@ export default function MerchantLoginForm() {
 
     try {
       const response = await crudService.loginUser(data);
-      console.log(response);
+      // console.log(response);
       if (response.error) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore

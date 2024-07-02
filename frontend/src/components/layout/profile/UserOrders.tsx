@@ -30,7 +30,7 @@ const UserOrders = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error("Error fetching orders", error);
         setLoading(false);
       });
@@ -48,7 +48,7 @@ const UserOrders = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error("Error cancelling order", error);
       });
   };

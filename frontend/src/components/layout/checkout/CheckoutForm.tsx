@@ -52,17 +52,17 @@ export default function CheckoutForm({
 
   const onSubmit = async (values: UserFormValue) => {
     setLoading(true);
-    console.log(values);
+    // console.log(values);
     try {
       const response = await crudService.placeOrder(values);
-      console.log(response);
+      // console.log(response);
       if (!response.error) {
         clearCart();
         toast.success("Order placed successfully");
         navigate(BASE_ENDPOINT);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Failed to place order");
     }
     setLoading(false);

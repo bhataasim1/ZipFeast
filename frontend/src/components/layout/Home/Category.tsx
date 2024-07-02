@@ -32,7 +32,7 @@ const categoryList: { id: number; name: string }[] = [
 const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const handleCategory = (id: number) => {
-    console.log("Category Clicked", id);
+    // console.log("Category Clicked", id);
     setSelectedCategory(id);
   };
 

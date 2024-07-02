@@ -32,7 +32,7 @@ export default function MerchantSignUpForm() {
   const defaultValues: UserFormValue = {
     storeName: "Zipfeast",
     name: "Aasim Ashraf",
-    email: "aasim@zipfeast.com",
+    email: "merchant@zipfeast.com",
     password: "Aasim@123",
     confirmPassword: "Aasim@123",
   };

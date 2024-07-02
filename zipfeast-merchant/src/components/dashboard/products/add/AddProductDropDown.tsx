@@ -82,7 +82,7 @@ const AddProductDropDown = ({
     try {
       setLoading(true);
       const response = await crudServices.createProduct(formData);
-      console.log("Success  ", response);
+      // console.log("Success  ", response);
       if (response.data.status === "success") {
         toast.success("Product updated successfully");
         onClose();
@@ -126,6 +126,7 @@ const AddProductDropDown = ({
                   <FormControl>
                     <FormCombinedInput
                       type="text"
+                      rows={3}
                       placeholder="Update product description"
                       {...field}
                     />
