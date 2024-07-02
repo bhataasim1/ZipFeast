@@ -60,7 +60,7 @@ model Merchant {
 model Product {
   id           Int         @id @default(autoincrement())
   name         String
-  description  String
+  description  String      @db.LongText
   price        String
   stock        String?     @default("0")
   category     String
