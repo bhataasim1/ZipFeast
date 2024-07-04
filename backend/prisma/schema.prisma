@@ -18,22 +18,23 @@ enum Role {
 
 // User model represents customers of the app
 model User {
-  id           Int            @id @default(autoincrement())
-  name         String
-  email        String         @unique
-  password     String
-  phone        String?
-  avatar       String?
-  address      String?
-  city         String?
-  state        String?
-  pincode      String?
-  role         Role           @default(USER)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  orders       Order[]
-  RefreshToken RefreshToken[]
-  Favorite     Favorite[]
+  id              Int              @id @default(autoincrement())
+  name            String
+  email           String           @unique
+  password        String
+  phone           String?
+  avatar          String?
+  address         String?
+  city            String?
+  state           String?
+  pincode         String?
+  role            Role             @default(USER)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  orders          Order[]
+  RefreshToken    RefreshToken[]
+  Favorite        Favorite[]
+  serviceBookings ServiceBooking[]
 }
 
 // Merchant model represents shop owners or sellers
@@ -125,4 +126,34 @@ model Favorite {
   productId   Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ServiceProvider {
+  id             Int              @id @default(autoincrement())
+  name           String
+  email          String           @unique
+  password       String
+  phone          String           @unique
+  avatar         String?
+  address        String?
+  city           String?
+  state          String?
+  pincode        String?
+  serviceType    String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  ServiceBooking ServiceBooking[]
+}
+
+// ServiceBooking model represents bookings for home services
+model ServiceBooking {
+  id                Int             @id @default(autoincrement())
+  user              User            @relation(fields: [userId], references: [id])
+  userId            Int
+  serviceProvider   ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+  serviceProviderId Int
+  bookingDate       DateTime
+  status            String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }

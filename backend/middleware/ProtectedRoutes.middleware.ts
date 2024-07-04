@@ -43,6 +43,20 @@ passport.use(
     })
 );
 
+passport.use(
+    'homeservice-jwt',
+    new JwtStrategy(JWTOptions, async (payload, done) => {
+        const homeService = await prisma.serviceProvider.findUnique({
+            where: {
+                id: Number(payload.id),
+            },
+        });
+        if (!homeService) {
+            return done(null, false);
+        }
+        return done(null, homeService);
+    })
+);
 
 ///TODO: This is temporary, we need to remove this middleware
 // export const authorizedUser = (
@@ -136,5 +150,8 @@ export const authorizedUser = (
 
 export const userAuth = passport.authenticate('user-jwt', { session: false });
 export const merchantAuth = passport.authenticate('merchant-jwt', {
+    session: false,
+});
+export const homeServiceAuth = passport.authenticate('homeservice-jwt', {
     session: false,
 });
