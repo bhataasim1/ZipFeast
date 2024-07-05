@@ -35,6 +35,7 @@ export class HomeServiceProfileController extends HomeServicesAuthController {
                     state: true,
                     avatar: true,
                     serviceType: true,
+                    price: true,
                 },
             });
 
@@ -62,10 +63,10 @@ export class HomeServiceProfileController extends HomeServicesAuthController {
             return this.sendSuccessResponse(res, 'Unauthorized access', 401);
         }
 
-        const { name, email, phone, address, city, pincode, state } = req.body;
+        const { name, address, price, city, pincode, state } = req.body;
 
         const avatar = req.file as UploadFile;
-        console.log('Avatar:', avatar);
+        // console.log('Avatar:', avatar);
 
         try {
             const homeService = await prisma.serviceProvider.findUnique({
@@ -84,13 +85,12 @@ export class HomeServiceProfileController extends HomeServicesAuthController {
                 },
                 data: {
                     name,
-                    email,
-                    phone,
                     address,
                     city,
+                    price,
                     pincode,
                     state,
-                    avatar: avatar?.location
+                    avatar: avatar?.location,
                 },
                 select: {
                     id: true,
