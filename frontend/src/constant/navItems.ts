@@ -35,3 +35,12 @@ export const dashboardNavItems: NavItem[] = [
     route: "/user/orders",
   },
 ];
+
+export const homeServiceDashboardNavItems: NavItem[] = [
+  {
+    name: "Profile",
+    icon: LucideUser,
+    href: "/user/profile",
+    route: "/user/profile",
+  },
+];
