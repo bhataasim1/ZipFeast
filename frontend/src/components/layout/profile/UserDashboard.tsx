@@ -2,6 +2,7 @@ import { authUserType } from "@/types/types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import ProfileUpdate from "./form/ProfileUpdate";
 import ProfileImageUploadCard from "./form/ProfileUploadImage";
+import ServiceProfileUpdate from "../HomeService/Profile/ServiceProfileUpdate";
 
 export default function UserDashboard() {
   const authUser: authUserType | null = useAuthUser();
@@ -17,8 +18,16 @@ export default function UserDashboard() {
             👋
           </h2>
         </div>
-        <ProfileImageUploadCard />
-        <ProfileUpdate />
+        {!authUser?.serviceType ? (
+          <>
+            <ProfileImageUploadCard />
+            <ProfileUpdate />
+          </>
+        ) : (
+          <div className="flex items-center justify-center">
+            <ServiceProfileUpdate />
+          </div>
+        )}
       </div>
     </>
   );

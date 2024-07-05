@@ -3,7 +3,7 @@ import { prisma } from '../../prisma/Schema';
 import bcrypt from 'bcrypt';
 import { UserProfileController } from '../User/UserProfile.controller';
 import { generateAccessToken, generateRefreshToken } from '../../middleware';
-import { PayloadType } from '../../types';
+import { PayloadType, UploadFile } from '../../types';
 
 export class HomeServicesAuthController extends UserProfileController {
     constructor() {
@@ -13,42 +13,67 @@ export class HomeServicesAuthController extends UserProfileController {
     }
 
     async registerUser(req: Request, res: Response) {
-        const { name, email, phone, serviceType, password, confirmPassword } =
-            req.body;
+        const {
+            name,
+            email,
+            phone,
+            serviceType,
+            address,
+            city,
+            state,
+            pincode,
+            password,
+            confirmPassword,
+            price,
+        } = req.body;
 
         if (
             !name ||
             !email ||
             !phone ||
             !serviceType ||
+            !address ||
+            !city ||
+            !state ||
+            !pincode ||
+            !price ||
             !password ||
             !confirmPassword
         ) {
-            return this.sendSuccessResponse(
-                res,
-                'All fields are required',
-                { email, name, password, confirmPassword },
-                400
-            );
+            return this.sendErrorResponse(res, 'All fields are required', 400);
         }
 
         if (password !== confirmPassword) {
-            return this.sendSuccessResponse(res, 'Passwords do not match', 400);
+            return this.sendErrorResponse(res, 'Passwords do not match', 400);
         }
 
         try {
             const existingUser = await prisma.serviceProvider.findFirst({
                 where: {
-                    OR: [{ email }],
+                    OR: [{ email }, { phone }],
                 },
             });
 
             if (existingUser?.email === email) {
-                return this.sendSuccessResponse(
+                return this.sendErrorResponse(
                     res,
-                    'User already exists',
+                    'User Email already exists',
                     400
                 );
+            }
+
+            if (existingUser?.phone === phone) {
+                return this.sendErrorResponse(
+                    res,
+                    'User Phone Number already exists',
+                    400
+                );
+            }
+
+            const avatar = req.file as UploadFile;
+
+            if (!avatar) {
+                return this.sendErrorResponse(res, 'Avatar is required', 400);
             }
 
             const hashedPassword = await this.hashPassword(password);
@@ -60,11 +85,25 @@ export class HomeServicesAuthController extends UserProfileController {
                     phone,
                     password: hashedPassword,
                     serviceType,
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    avatar: avatar?.location,
+                    price,
                 },
                 select: {
                     id: true,
                     name: true,
                     email: true,
+                    avatar: true,
+                    phone: true,
+                    serviceType: true,
+                    address: true,
+                    city: true,
+                    state: true,
+                    pincode: true,
+                    price: true,
                 },
             });
 
@@ -88,11 +127,7 @@ export class HomeServicesAuthController extends UserProfileController {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return this.sendSuccessResponse(
-                res,
-                'All fields are required',
-                400
-            );
+            return this.sendErrorResponse(res, 'All fields are required', 400);
         }
 
         try {
@@ -103,11 +138,7 @@ export class HomeServicesAuthController extends UserProfileController {
             });
 
             if (!user) {
-                return this.sendSuccessResponse(
-                    res,
-                    'User does not exist',
-                    404
-                );
+                return this.sendErrorResponse(res, 'User does not exist', 404);
             }
 
             const isPasswordValid = await bcrypt.compare(
@@ -116,7 +147,7 @@ export class HomeServicesAuthController extends UserProfileController {
             );
 
             if (!isPasswordValid) {
-                return this.sendSuccessResponse(res, 'Invalid password', 400);
+                return this.sendErrorResponse(res, 'Invalid password', 400);
             }
 
             const payload: PayloadType = {

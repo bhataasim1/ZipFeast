@@ -1,4 +1,7 @@
-import { dashboardNavItems } from "@/constant/navItems";
+import {
+  dashboardNavItems,
+  homeServiceDashboardNavItems,
+} from "@/constant/navItems";
 import { Nav } from "../Nav";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { authUserType } from "@/types/types";
@@ -14,7 +17,11 @@ const DashboardSidebarNav = () => {
           </h2>
         </div>
         <div className="flex-1 overflow-y-auto m-2">
-          <Nav items={dashboardNavItems} mobile={true} />
+          {!authUser?.serviceType ? (
+            <Nav items={dashboardNavItems} mobile={true} />
+          ) : (
+            <Nav items={homeServiceDashboardNavItems} mobile={true} />
+          )}
         </div>
       </div>
     </div>

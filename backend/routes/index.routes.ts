@@ -10,5 +10,7 @@ router.get('/products', indexController.getProducts);
 router.get('/products/:productId', indexController.getProductById);
 router.get('/search', indexController.searchProducts);
 router.get('/get-categories', indexController.getCategories);
+router.get('/service-providers', indexController.getAllServiceProviders);
+router.get('/service-provider/:id', indexController.getServiceProviderById);
 
 export default router;

@@ -38,6 +38,7 @@ export type authUserType = {
   name: string;
   email: string;
   avatar: string;
+  serviceType?: string;
 };
 
 export type MerchantType = {
@@ -66,4 +67,18 @@ export type CartItemType = {
   id: number;
   product: ProductType;
   quantity: number;
+};
+
+export type ServiceProviderType = {
+  id: number;
+  email: string;
+  name: string;
+  phone: string;
+  address: string;
+  avatar: string;
+  city: string;
+  pincode: string;
+  serviceType: string;
+  state: string;
+  price: string;
 };
