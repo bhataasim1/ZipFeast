@@ -216,4 +216,87 @@ export class IndexController {
             })
         );
     }
+
+    public async getAllServiceProviders(req: Request, res: Response) {
+        try {
+            const serviceProviders = await prisma.serviceProvider.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true,
+                    serviceType: true,
+                    address: true,
+                    city: true,
+                    state: true,
+                    pincode: true,
+                    avatar: true,
+                    price: true,
+                },
+            });
+
+            return res.send(
+                new ApiResponse({
+                    status: 'success',
+                    data: serviceProviders,
+                })
+            );
+        } catch (error) {
+            return res.send(
+                new ApiResponse({
+                    status: 'error',
+                    message: 'Something went wrong',
+                    error,
+                })
+            );
+        }
+    }
+
+    public async getServiceProviderById(req: Request, res: Response) {
+        const { id } = req.params;
+        try {
+            const serviceProvider = await prisma.serviceProvider.findUnique({
+                where: {
+                    id: Number(id),
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true,
+                    serviceType: true,
+                    address: true,
+                    city: true,
+                    state: true,
+                    pincode: true,
+                    avatar: true,
+                    price: true,
+                },
+            });
+
+            if (!serviceProvider) {
+                return res.send(
+                    new ApiResponse({
+                        status: 'error',
+                        message: 'Service Provider not found',
+                    })
+                );
+            }
+
+            return res.send(
+                new ApiResponse({
+                    status: 'success',
+                    data: serviceProvider,
+                })
+            );
+        } catch (error) {
+            return res.send(
+                new ApiResponse({
+                    status: 'error',
+                    message: 'Something went wrong',
+                    error,
+                })
+            );
+        }
+    }
 }
