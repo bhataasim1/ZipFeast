@@ -9,7 +9,11 @@ const HomeServiceRouter: Router = express.Router();
 const homeServicesAuthController = new HomeServicesAuthController();
 const homeServiceProfileController = new HomeServiceProfileController();
 
-HomeServiceRouter.post('/register', homeServicesAuthController.registerUser);
+HomeServiceRouter.post(
+    '/register',
+    upload('avatar'),
+    homeServicesAuthController.registerUser
+);
 HomeServiceRouter.post('/login', homeServicesAuthController.loginUser);
 
 HomeServiceRouter.get(
@@ -19,7 +23,7 @@ HomeServiceRouter.get(
     homeServiceProfileController.getProfile
 );
 HomeServiceRouter.put(
-    '/update',
+    '/profile/update',
     authorizedUser,
     homeServiceAuth,
     upload('avatar'),
