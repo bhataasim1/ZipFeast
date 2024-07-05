@@ -4,7 +4,6 @@ import Homepage from "./components/pages/Homepage";
 import { SIGN_IN, SIGN_UP } from "./constant/endpoins";
 import SignupPage from "./components/pages/Signup-Page";
 import SigninPage from "./components/pages/Signin-Page";
-import { Header } from "./components/layout/Header";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import { SingleProduct } from "./components/layout/Home/product/SingleProduct";
 import createStore from "react-auth-kit/createStore";
@@ -16,6 +15,9 @@ import UserOrders from "./components/layout/profile/UserOrders";
 import CheckoutPage from "./components/pages/CheckoutPage";
 import SearchAndStorePage from "./components/pages/SearchAndStorePage";
 import ServicePage from "./components/pages/ServicePage";
+import { Register } from "./components/layout/HomeService/Form/Register";
+import { Login } from "./components/layout/HomeService/Form/Login";
+import { SingleUserPage } from "./components/layout/HomeService/SingleUserPage";
 
 const store = createStore({
   authName: "token",
@@ -33,8 +35,9 @@ const AppRoutes = () => {
             path="/*"
             element={
               <>
-                <Header />
-                <Homepage />
+                <Layout>
+                  <Homepage />
+                </Layout>
               </>
             }
           />
@@ -80,6 +83,33 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <ServicePage />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/services/register"
+            element={
+              <Layout>
+                <Register />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/services/login"
+            element={
+              <Layout>
+                <Login />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/service/:id"
+            element={
+              <Layout>
+                <SingleUserPage />
               </Layout>
             }
           />
