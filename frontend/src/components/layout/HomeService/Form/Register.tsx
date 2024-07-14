@@ -87,6 +87,7 @@ export function Register() {
     formData.append("pincode", values.pincode);
     formData.append("password", values.password);
     formData.append("confirmPassword", values.confirmPassword);
+    formData.append("price", values.price);
 
     if (values.avatar) {
       formData.append("avatar", values.avatar);
