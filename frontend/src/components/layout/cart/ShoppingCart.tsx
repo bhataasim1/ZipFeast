@@ -36,7 +36,7 @@ export default function ShoppingCart({ isCartOpen }: ShoppingCartProps) {
   }, [isCartOpen, searchParams, setSearchParams]);
 
   const totalPrice = cartItems.reduce((total, item) => {
-    return total + Number(item.product.price) * item.quantity;
+    return total + Number(item?.product?.price) * item?.quantity;
   }, 0);
 
   const handleCheckout = () => {
