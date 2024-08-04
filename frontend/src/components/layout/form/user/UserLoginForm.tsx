@@ -47,7 +47,9 @@ export default function UserLoginForm() {
     try {
       const response = await crudService.loginUser(data);
       if (response.error) {
-        toast.error(response.error);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        toast.error(response.error.message);
         console.error(response.error);
       } else {
         if (response.data) {
