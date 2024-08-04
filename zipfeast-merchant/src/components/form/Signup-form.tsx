@@ -47,7 +47,9 @@ export default function MerchantSignUpForm() {
     try {
       const response = await crudService.registerUser(values);
       if (response.error) {
-        toast.error(response.error);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        toast.error(response.error.message);
       } else {
         toast.success("User registered successfully");
         navigate(LOGIN_ENDPOINT);
