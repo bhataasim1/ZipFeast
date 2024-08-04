@@ -13,7 +13,7 @@ const ProductCard = ({ id, name, price, productImage, stock }: ProductType) => {
   const stockNumber = Number(stock);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full hover:border-2 hover:border-orange-600">
       <CardContent>
         <Link to={`/product/${id}`}>
           <div className="w-full items-center gap-4">
