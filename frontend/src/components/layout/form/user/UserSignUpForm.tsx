@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { BASE_ENDPOINT, SIGN_IN } from "@/constant/endpoins";
 import { useNavigate } from "react-router-dom";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-import { authUserType } from "@/types/types"; 
+import { authUserType } from "@/types/types";
 
 type UserFormValue = z.infer<typeof userRegistrationValidationSchema>;
 
@@ -47,7 +47,9 @@ export default function UserSignUpForm() {
     try {
       const response = await crudService.registerUser(values);
       if (response.error) {
-        toast.error(response.error);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        toast.error(response.error.message);
       } else {
         toast.success("User registered successfully");
         navigate(SIGN_IN);
