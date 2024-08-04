@@ -64,7 +64,7 @@ const Store = () => {
       </div>
       {page < totalPages && (
         <Button
-          className="mt-4 mx-auto block py-2 px-4 rounded"
+          className="mt-4 mx-auto block py-2 px-4 rounded mb-2"
           onClick={handleLoadMore}
           disabled={loading}
           variant={'outline'}
