@@ -96,6 +96,12 @@ const UserOrders = () => {
           Pending
         </Button>
         <Button
+          onClick={() => setFilterStatus("ARRIVING")}
+          variant={filterStatus === "ARRIVING" ? "destructive" : "outline"}
+        >
+          Arriving
+        </Button>
+        <Button
           onClick={() => setFilterStatus("DELIVERED")}
           variant={filterStatus === "DELIVERED" ? "destructive" : "outline"}
         >
@@ -139,13 +145,16 @@ const UserOrders = () => {
                   </Link>
                 ))}
                 {order.orderStatus === "DELIVERED" ? (
-                  <Button
-                    onClick={() => buyAgain(order.id)}
-                    variant={"outline"}
-                    className="w-full text-green-600 border-2 border-green-600"
-                  >
-                    Buy Again
-                  </Button>
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  order.items.map((item: any) => (
+                    <Button
+                      onClick={() => buyAgain(item.product.id)}
+                      variant={"outline"}
+                      className="w-full text-green-600 border-2 border-green-600"
+                    >
+                      Buy Again
+                    </Button>
+                  ))
                 ) : (
                   <div className="flex gap-2">
                     <Button
