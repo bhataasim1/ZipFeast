@@ -12,7 +12,7 @@ import { DashboardProducts } from "./components/dashboard/products/DashboardProd
 import { DashboardOrders } from "./components/dashboard/orders/DashboardOrders";
 
 const store = createStore({
-  authName: "token",
+  authName: "merchant_token",
   authType: "cookie",
   cookieDomain: window.location.hostname,
   cookieSecure: window.location.protocol === "https:",
