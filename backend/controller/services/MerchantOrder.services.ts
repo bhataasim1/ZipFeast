@@ -18,6 +18,7 @@ export class MerchantOrderService extends OrderServices {
                     },
                 },
             },
+            orderBy: { createdAt: 'desc' },
         });
 
         if (orders.length === 0) {
