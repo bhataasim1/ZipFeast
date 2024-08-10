@@ -20,7 +20,7 @@ import { Login } from "./components/layout/HomeService/Form/Login";
 import { SingleUserPage } from "./components/layout/HomeService/SingleUserPage";
 
 const store = createStore({
-  authName: "token",
+  authName: "user_token",
   authType: "cookie",
   cookieDomain: window.location.hostname,
   cookieSecure: window.location.protocol === "https:",
